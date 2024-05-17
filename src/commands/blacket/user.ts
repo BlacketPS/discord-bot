@@ -1,4 +1,4 @@
-import { type ChatInputCommandInteraction, inlineCode, ApplicationCommandOptionType, AttachmentBuilder, EmbedBuilder } from 'discord.js';
+import { type ChatInputCommandInteraction, inlineCode, ApplicationCommandOptionType, AttachmentBuilder, EmbedBuilder, TimestampStyles, time, userMention, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageActionRowComponentBuilder, AnyComponentBuilder } from 'discord.js';
 
 import type { Command } from '../../structures/command.js';
 import SimpleEmbedMaker, { SemType } from '../../misc/simpleEmbedMaker.js';
@@ -8,6 +8,7 @@ import { Repository } from 'sequelize-typescript';
 import Canvas from '@napi-rs/canvas';
 import { Op } from 'sequelize';
 import { experienceToLevel } from '../../misc/util.js';
+import { getUser } from '../../database/user.js';
 
 export default {
     data: {
@@ -17,8 +18,7 @@ export default {
 			{
 				name: 'user',
 				type: ApplicationCommandOptionType.String,
-				description: 'The user to get information about.',
-				required: true
+				description: 'The user to get information about.'
 			}
 		]
     },
@@ -31,19 +31,21 @@ export default {
     async execute(interaction: ChatInputCommandInteraction<'cached'>) {
 		await interaction.deferReply();
 
+		const userLookup = await getUser(interaction, interaction.options.getString('user'));
+
         const UserRepo: Repository<User> = interaction.client.sequelize.getRepository(User);
 		const user = await UserRepo.findOne({
 			where: {
 				[Op.or]: [
 					{
-						id: interaction.options.getString('user')
+						id: userLookup
 					},
 					{
-						username: interaction.options.getString('user')
+						username: userLookup
 					}
 				]
 			},
-			include: ['avatar', 'banner', 'title']
+			include: ['avatar', 'banner', 'title', 'discord', 'statistics']
 		});
 
 		if (!user) {
@@ -59,9 +61,6 @@ export default {
 			return;
 		}
 
-		console.log(user)
-
-		const start = Date.now();
 		// user header creation
 		const userHeaderCanvas = Canvas.createCanvas(494, 138);
 		const userHeaderCtx = userHeaderCanvas.getContext('2d');
@@ -76,8 +75,6 @@ export default {
 		userHeaderCtx.fillStyle = '#2f2f2f'
 
 		const level = experienceToLevel(user.experience);
-
-		console.log(level)
 
 		const x = 148;
 		const y = 112;
@@ -135,9 +132,9 @@ export default {
 		userHeaderCtx.font = '16px Nunito';
 		userHeaderCtx.fillText(user.title.name, 313.475, 78.6);
 
-		const userHeaderAttachment = new AttachmentBuilder(await userHeaderCanvas.encode('png'), { name: 'user.png' });
+		console.log(user.discord)
 
-		console.log(`User header took ${Date.now() - start}ms`);
+		const userHeaderAttachment = new AttachmentBuilder(await userHeaderCanvas.encode('png'), { name: 'user.png' });
 
 		// swnd
 		await interaction.editReply({
@@ -147,13 +144,45 @@ export default {
 					.setImage('attachment://user.png'),
 				new EmbedBuilder()
 					.setColor(0x2b2d31)
-					.setDescription("nother image here for shit")
-					.setImage('https://i.imgur.com/8NdaHgw.png'),
-				new EmbedBuilder()
-					.setColor(0x2b2d31)
-					.setDescription(`[View Profile](https://rewrite.blacket.org/stats?name=${user.id})`)
-					.setImage('https://i.imgur.com/8NdaHgw.png')
+					.setFields([
+						{
+							name: '__``Stats``__',
+							value: 	"**Tokens:** " + `<:token:1030683509616037948> ${user.tokens.toLocaleString()}` +
+									"\n**Exp:** " + `<:exp:1030683507514687508> ${user.experience.toLocaleString()} [<:level:1030683508596809748> ${Math.floor(level)}]` +
+									"\n**Packs Opened:** " + `<:openedIcon:1045911376494874646> ${user.statistics.packsOpened.toLocaleString()}`,
+							inline: true
+						},
+						{
+							name: '__``User Info``__',
+							value: 	"**Messages:** " + `<:messagesIcon:1045939184562602046> ${user.statistics.messagesSent.toLocaleString()}` +
+									"\n**Discord:** " + (user.discord ? userMention(user.discord.discordId) : "No linked account") +
+									"\n**Joined:** " + time(user.createdAt, TimestampStyles.ShortDate) +
+									"\n**Last Seen:** " + time(user.updatedAt, TimestampStyles.RelativeTime),
+							inline: true
+						},
+						{
+							name: '__``Standing``__',
+							value: 	"**Banned:** " + "<:error:1033851534754201832>" +
+									"\n**Muted:** " + "<:error:1033851534754201832>",
+							inline: true
+						},
+					])
 					.setTimestamp(new Date())
+					.setFooter({ text: `ID: ${user.id}  •  Clan: None` })
+					.setImage('https://i.imgur.com/8NdaHgw.png')
+			],
+			components: [
+				new ActionRowBuilder<ButtonBuilder>()
+					.addComponents(
+						new ButtonBuilder()
+							.setLabel('View Profile')
+							.setURL(`https://rewrite.blacket.org/stats?name=${user.id}`)
+							.setStyle(ButtonStyle.Link),
+						new ButtonBuilder()
+							.setLabel('View Clan')
+							.setURL(`https://rewrite.blacket.org/stats?name=${user.id}`)
+							.setStyle(ButtonStyle.Link)
+					),
 			],
 			files: [userHeaderAttachment],
 		});
