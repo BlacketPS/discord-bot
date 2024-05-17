@@ -1,0 +1,33 @@
+{
+  "name": "blacket-rewrite-bot",
+  "version": "1.0.0",
+  "description": "rewrite bot",
+  "main": "src/index.ts",
+  "types": "environment.d.ts",
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc --build",
+    "start": "pnpm run clean && pnpm run build && node dist/index.js",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'pnpm run start'",
+    "deploy": "pnpm run clean && pnpm run build && node dist/deploy-commands.js"
+  },
+  "keywords": [],
+  "author": "Syfe",
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.52",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.4.5",
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
+    "reflect-metadata": "^0.2.1",
+    "sequelize": "^6.37.1",
+    "sequelize-typescript": "^2.1.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "@types/validator": "^13.11.9",
+    "nodemon": "^3.1.0",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.4.3"
+  }
+}
