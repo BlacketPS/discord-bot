@@ -1,7 +1,7 @@
 import { ApplicationCommandType, type UserContextMenuCommandInteraction } from 'discord.js';
 import { ContextMenu } from '../../structures/contextMenu';
-import { sendUserEmbed } from '../../commands/blacket/user';
 import { getUser } from '../../database/user';
+import { sendUserEmbed } from '../../misc/user';
 
 export default {
     data: {
