@@ -10,30 +10,8 @@ import { Op } from 'sequelize';
 import { experienceToLevel } from '../../misc/util.js';
 import { getUser } from '../../database/user.js';
 
-export default {
-    data: {
-        name: 'user',
-        description: 'Get and display information about a user.',
-		options: [
-			{
-				name: 'user',
-				type: ApplicationCommandOptionType.String,
-				description: 'The user to get information about.'
-			}
-		]
-    },
-    opt: {
-        userPermissions: ['SendMessages'],
-        botPermissions: ['SendMessages'],
-        category: 'Blacket',
-        cooldown: 5
-    },
-    async execute(interaction: ChatInputCommandInteraction<'cached'>) {
-		await interaction.deferReply();
-
-		const userLookup = await getUser(interaction, interaction.options.getString('user'));
-
-        const UserRepo: Repository<User> = interaction.client.sequelize.getRepository(User);
+export async function sendUserEmbed(interaction: any, userLookup: any) {
+	const UserRepo: Repository<User> = interaction.client.sequelize.getRepository(User);
 		const user = await UserRepo.findOne({
 			where: {
 				[Op.or]: [
@@ -49,12 +27,13 @@ export default {
 		});
 
 		if (!user) {
+			const discUserResolve = await interaction.client.users.fetch(userLookup);
 			await interaction.editReply({
 				embeds: [
 					SimpleEmbedMaker({
 						type: SemType.ERROR,
 						title: 'User not found',
-						description: `No user found with the ID/Username ${inlineCode(interaction.options.getString('user'))}!`
+						description: `No user found with the ID/Username ${discUserResolve ? discUserResolve : inlineCode(userLookup)}!`
 					})
 				]
 			});
@@ -132,8 +111,6 @@ export default {
 		userHeaderCtx.font = '16px Nunito';
 		userHeaderCtx.fillText(user.title.name, 313.475, 78.6);
 
-		console.log(user.discord)
-
 		const userHeaderAttachment = new AttachmentBuilder(await userHeaderCanvas.encode('png'), { name: 'user.png' });
 
 		// swnd
@@ -167,7 +144,6 @@ export default {
 							inline: true
 						},
 					])
-					.setTimestamp(new Date())
 					.setFooter({ text: `ID: ${user.id}  •  Clan: None` })
 					.setImage('https://i.imgur.com/8NdaHgw.png')
 			],
@@ -186,5 +162,31 @@ export default {
 			],
 			files: [userHeaderAttachment],
 		});
+}
+
+export default {
+    data: {
+        name: 'user',
+        description: 'Get and display information about a user.',
+		options: [
+			{
+				name: 'user',
+				type: ApplicationCommandOptionType.String,
+				description: 'The user to get information about.'
+			}
+		]
+    },
+    opt: {
+        userPermissions: ['SendMessages'],
+        botPermissions: ['SendMessages'],
+        category: 'Blacket',
+        cooldown: 5
+    },
+    async execute(interaction: ChatInputCommandInteraction<'cached'>) {
+		await interaction.deferReply();
+
+		const userLookup = await getUser(interaction, interaction.options.getString('user'));
+
+        await sendUserEmbed(interaction, userLookup);
     }
 } satisfies Command;

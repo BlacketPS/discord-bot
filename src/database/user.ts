@@ -1,7 +1,7 @@
-import { ChatInputCommandInteraction } from "discord.js"
+import { ChatInputCommandInteraction, UserContextMenuCommandInteraction } from "discord.js"
 import { UserDiscord } from "../models"
 
-export async function getUser(interaction: ChatInputCommandInteraction<'cached'>, id: string) {
+export async function getUser(interaction: ChatInputCommandInteraction<'cached'> | UserContextMenuCommandInteraction<'cached'>, id: string) {
 	const pingedUserId = id?.match(/<@!?(\d+)>/)?.[1];
 
 	if (!id || pingedUserId) {

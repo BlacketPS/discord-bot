@@ -8,6 +8,7 @@ import { SequelizeInstance } from '../database/sequelize';
 import path from 'node:path';
 import { readdir } from 'node:fs';
 import { GlobalFonts } from '@napi-rs/canvas';
+import { ContextMenu } from './contextMenu';
 
 export class ExtendedClient extends Client {
     constructor() {
@@ -22,6 +23,7 @@ export class ExtendedClient extends Client {
             },
         });
         this.commands = new Collection<string, Command>();
+        this.contextMenus = new Collection<string, ContextMenu>();
         this.cooldown = new Collection<string, Collection<string, number>>();
         this.sequelize = new SequelizeInstance();
     };
@@ -37,6 +39,15 @@ export class ExtendedClient extends Client {
 
         for (const command of commandFiles) {
             this.commands.set(command.data.name, command);
+        }
+
+        // Context Menu handling
+        const contextMenuFolderPath = path.join(__dirname, '../contextmenu');
+        const contextMenuFiles: ContextMenu[] = await loadStructures(contextMenuFolderPath, ['data', 'execute']);
+
+        for (const contextMenu of contextMenuFiles) {
+            this.contextMenus.set(contextMenu.data.name, contextMenu);
+            console.log(`Loaded context menu ${contextMenu.data.name}`)
         }
 
         // Event handling

@@ -5,6 +5,7 @@ import {
 	type RESTPutAPIApplicationCommandsJSONBody,
 	type RESTPutAPIApplicationGuildCommandsJSONBody,
 	Routes,
+	RESTPostAPIContextMenuApplicationCommandsJSONBody,
 } from 'discord.js';
 
 import { loadStructures } from './misc/util.js';
@@ -15,7 +16,7 @@ import 'dotenv/config'
 
 // and deploy your commands!
 (async () => {
-	const commands: RESTPostAPIApplicationCommandsJSONBody[] | RESTPostAPIApplicationGuildCommandsJSONBody[] = [];
+	const commands: RESTPostAPIApplicationCommandsJSONBody[] | RESTPostAPIApplicationGuildCommandsJSONBody[] | RESTPostAPIApplicationCommandsJSONBody[] | RESTPostAPIApplicationGuildCommandsJSONBody[] = [];
 	
 	const commandFolderPath = path.join(__dirname, 'commands');
 	const commandFiles: Command[] = await loadStructures(commandFolderPath, ['data', 'execute']);
@@ -23,6 +24,14 @@ import 'dotenv/config'
 	// Grab the output of each command for deployment
 	for (const command of commandFiles) {
 		commands.push(command.data);
+	}
+
+	// Grab the output of each context menu for deployment
+	const contextMenuFolderPath = path.join(__dirname, 'contextmenu');
+	const contextMenuFiles: Command[] = await loadStructures(contextMenuFolderPath, ['data', 'execute']);
+
+	for (const contextMenu of contextMenuFiles) {
+		commands.push(contextMenu.data);
 	}
 	
 	// Construct and prepare an instance of the REST module
