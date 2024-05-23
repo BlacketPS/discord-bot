@@ -4,8 +4,6 @@ import type { Command } from '../../structures/command.js';
 import { getUser } from '../../database/user.js';
 import { sendUserEmbed } from '../../misc/user.js';
 
-
-
 export default {
     data: {
         name: 'user',
@@ -25,8 +23,6 @@ export default {
         cooldown: 5
     },
     async execute(interaction: ChatInputCommandInteraction<'cached'>) {
-		await interaction.deferReply();
-
 		const userLookup = await getUser(interaction, interaction.options.getString('user'));
 
         await sendUserEmbed(interaction, userLookup);

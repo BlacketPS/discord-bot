@@ -9,8 +9,6 @@ export default {
         name: 'View Blacket User',
     },
     async execute(interaction: UserContextMenuCommandInteraction<'cached'>) {
-        await interaction.deferReply();
-
         const userLookup = await getUser(interaction, interaction.targetId);
 
 		await sendUserEmbed(interaction, userLookup)
