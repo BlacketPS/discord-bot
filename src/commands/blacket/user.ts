@@ -1,8 +1,8 @@
-import { type ChatInputCommandInteraction, ApplicationCommandOptionType } from 'discord.js';
+import { type ChatInputCommandInteraction, ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
 
 import type { Command } from '../../structures/command.js';
-import { getUser } from '../../database/user.js';
-import { sendUserEmbed } from '../../misc/user.js';
+import { getUserFromCommand } from '../../misc/userUtil.js';
+import { sendUserEmbed } from '../../misc/userCommand.js';
 
 export default {
     data: {
@@ -23,8 +23,22 @@ export default {
         cooldown: 5
     },
     async execute(interaction: ChatInputCommandInteraction<'cached'>) {
-		const userLookup = await getUser(interaction, interaction.options.getString('user'));
+        try {
+            const userLookup = await getUserFromCommand(interaction);
+            if (!userLookup) return; // return here because we do error handling and user ux within our util
 
-        await sendUserEmbed(interaction, userLookup);
+            await sendUserEmbed(interaction, userLookup);
+        } catch (error) {
+            await interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('❗ Error: User ❗')
+                        .setDescription(error.message)
+                        .setColor(0x990000)
+                        .setThumbnail(`${process.env.BASE_URL}/content/blooks/Error.png`)
+                        .setTimestamp()
+                ]
+            });
+        }
     }
 } satisfies Command;

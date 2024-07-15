@@ -59,8 +59,9 @@ export class ExtendedClient extends Client {
         }
 
         // Load Fonts
-        GlobalFonts.registerFromPath('/var/www/blacket-rewrite/frontend/public/content/fonts/Nunito Bold.ttf', 'Nunito');
-        GlobalFonts.registerFromPath('/var/www/blacket-rewrite/frontend/public/content/fonts/Titan One.ttf', 'Titan One');
+        // TODO: load these dynamically somehow
+        GlobalFonts.registerFromPath('/var/www/blacket-rewrite-bot/assets/Nunito-Bold.ttf', 'Nunito');
+        GlobalFonts.registerFromPath('/var/www/blacket-rewrite-bot/assets/TitanOne-Regular.ttf', 'Titan One');
     }
 
     /**

@@ -123,3 +123,7 @@ export function formatMessageToEmbed(message: Message<true>) {
 export function experienceToLevel(experience: number): number {
     return .805 * Math.pow(experience, 1/2.75);
 };
+
+export function levelToExperience(level: number): number {
+    return Math.pow(level / .805, 2.75);
+}

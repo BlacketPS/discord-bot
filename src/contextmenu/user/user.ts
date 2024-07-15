@@ -1,7 +1,7 @@
 import { ApplicationCommandType, type UserContextMenuCommandInteraction } from 'discord.js';
 import { ContextMenu } from '../../structures/contextMenu';
-import { getUser } from '../../database/user';
-import { sendUserEmbed } from '../../misc/user';
+import { getUserFromContextMenu } from '../../misc/userUtil';
+import { sendUserEmbed } from '../../misc/userCommand';
 
 export default {
     data: {
@@ -9,7 +9,8 @@ export default {
         name: 'View Blacket User',
     },
     async execute(interaction: UserContextMenuCommandInteraction<'cached'>) {
-        const userLookup = await getUser(interaction, interaction.targetId);
+        const userLookup = await getUserFromContextMenu(interaction);
+        if (!userLookup) return; // return here because we do error handling and user ux within our util
 
 		await sendUserEmbed(interaction, userLookup)
     }

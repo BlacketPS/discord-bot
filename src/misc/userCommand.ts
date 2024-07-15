@@ -1,73 +1,10 @@
-import { type ChatInputCommandInteraction, inlineCode, AttachmentBuilder, EmbedBuilder, TimestampStyles, time, userMention, ActionRowBuilder, ButtonBuilder, ButtonStyle, UserContextMenuCommandInteraction } from 'discord.js';
+import { AttachmentBuilder, EmbedBuilder, TimestampStyles, time, userMention, ActionRowBuilder, ButtonBuilder, ButtonStyle, inlineCode } from 'discord.js';
 
-import SimpleEmbedMaker, { SemType } from '../misc/simpleEmbedMaker.js';
-import User from '../models/user.model.js';
-import { Repository } from 'sequelize-typescript';
+import SimpleEmbedMaker, { SemType } from './simpleEmbedMaker.js';
+import { getDbUser } from './userUtil.js';
 
 import Canvas from '@napi-rs/canvas';
-import { Op } from 'sequelize';
-import { experienceToLevel } from '../misc/util.js';
-import UserDiscord from '../models/userDiscord.model.js';
-import UserGroup from '../models/userGroup.model.js';
-import Group from '../models/group.model.js';
-import Resource from '../models/resource.model.js';
-
-export async function getUser(interaction: ChatInputCommandInteraction<'cached'> | UserContextMenuCommandInteraction<'cached'>, id: string) {
-	const pingedUserId = id?.match(/<@!?(\d+)>/)?.[1];
-
-	if (!id || pingedUserId) {
-		const userDiscord = await interaction.client.sequelize.getRepository(UserDiscord).findOne({
-			where: {
-				discordId: pingedUserId ?? interaction.user.id
-			}
-		}).catch(() => { throw new Error('User not found') })
-
-		return userDiscord.userId;
-	}
-
-	const userDiscord = await interaction.client.sequelize.getRepository(UserDiscord).findOne({
-		where: {
-			discordId: id
-		}
-	})
-
-	if (userDiscord) return userDiscord.userId;
-
-	return id;
-}
-
-async function getDbUser(interaction: ChatInputCommandInteraction<'cached'> | UserContextMenuCommandInteraction<'cached'>, userLookup: any) {
-	const UserRepo: Repository<User> = interaction.client.sequelize.getRepository(User);
-	const user = await UserRepo.findOne({
-		where: {
-			[Op.or]: [
-				{
-					id: userLookup
-				},
-				{
-					username: userLookup
-				}
-			]
-		},
-		include: [
-			{
-				model: interaction.client.sequelize.getRepository(UserGroup),
-				include: [
-					{
-						model: interaction.client.sequelize.getRepository(Group),
-						include: [
-							{
-								model: interaction.client.sequelize.getRepository(Resource)
-							}
-						]
-					}
-				]
-			},
-			'avatar', 'banner', 'title', 'discord', 'statistics']
-	});
-
-	return user;
-}
+import { experienceToLevel, levelToExperience } from './util.js';
 
 async function renderRectangleRounded(ctx: Canvas.SKRSContext2D, x: number, y: number, width: number, height: number, radius: number, color: string) {
 	ctx.fillStyle = color;
@@ -79,7 +16,6 @@ async function renderRectangleRounded(ctx: Canvas.SKRSContext2D, x: number, y: n
 	ctx.arcTo(x, y, x + width, y, radius);
 	ctx.closePath();
 	ctx.fill();
-
 }
 
 async function renderBadge(ctx: Canvas.SKRSContext2D, scale: number, color: string, i: number, badges: string[], badgeContainersPerRow: number, badgeContainerSize: number, badgeContainerPadding: number, badgeSize: number) {
@@ -94,7 +30,7 @@ async function renderBadge(ctx: Canvas.SKRSContext2D, scale: number, color: stri
 
 	await renderRectangleRounded(ctx, x, y, width, height, radius, color);
 
-	const badge = await Canvas.loadImage(process.env.RELATIVE_FILE_URL + badges[i]);
+	const badge = await Canvas.loadImage(badges[i]);
 	ctx.drawImage(badge, xBadge, yBadge, badgeSize, badgeSize);
 }
 
@@ -102,16 +38,15 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	const user = await getDbUser(interaction, userLookup);
 
 	if (!user) {
-		if (!isNaN(userLookup)) var discUserResolve = await interaction.client.users.fetch(userLookup);
-
 		await interaction.reply({
 			embeds: [
 				SimpleEmbedMaker({
 					type: SemType.ERROR,
 					title: 'User not found',
-					description: `No user found with the ID/Username ${discUserResolve??false ? discUserResolve : inlineCode(userLookup)}!`
+					description: `No user found for username/id of ${inlineCode(userLookup)}!`
 				})
-			]
+			],
+			ephemeral: true
 		});
 		return;
 	}
@@ -125,6 +60,7 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	const levelFilledColor = '#00bfff';
 	
 	const userLevel = experienceToLevel(user.experience);
+	const experienceUntilNextLevel = levelToExperience(Math.floor(userLevel) + 1) - user.experience;
 
 	const badgeContainersPerRow = 8;
 	const badgeContainerSize = 63 * scale;
@@ -161,12 +97,11 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 
 	/**
 	 * Render user header
-	 * TODO: Move the beginning of the URL to a config file
 	 */
-	const userAvatar = await Canvas.loadImage(process.env.RELATIVE_FILE_URL + user.avatar.path);
+	const userAvatar = await Canvas.loadImage(user.avatar.path);
 	ctx.drawImage(userAvatar, 0, 0, 111.83 * scale, 128 * scale);
 
-	const userBanner = await Canvas.loadImage(process.env.RELATIVE_FILE_URL + user.banner.path);
+	const userBanner = await Canvas.loadImage(user.banner.path);
 	ctx.drawImage(userBanner, 132.83 * scale, 18.6 * scale, 361.29 * scale, 80 * scale);
 
 
@@ -188,7 +123,7 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	/**
 	 * Render level star
 	 */
-	const levelStar = await Canvas.loadImage(process.env.RELATIVE_FILE_URL + "/content/levelStar.png");
+	const levelStar = await Canvas.loadImage(process.env.CDN_URL + "/static/content/levelStar.png");
 	ctx.drawImage(levelStar, 127 * scale, 103 * scale, 35 * scale, 35 * scale);
 
 	
@@ -234,14 +169,16 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 					{
 						name: '__``Stats``__',
 						value: 	"**Tokens:** " + `<:token:1030683509616037948> ${user.tokens.toLocaleString()}` +
-								"\n**Exp:** " + `<:exp:1030683507514687508> ${user.experience.toLocaleString()} [<:level:1030683508596809748> ${Math.floor(userLevel)}]` +
-								"\n**Packs Opened:** " + `<:openedIcon:1045911376494874646> ${user.statistics.packsOpened.toLocaleString()}`,
+								"\n**Level:** " + `<:level:1030683508596809748> ${Math.floor(userLevel)}` +
+								"\n**Exp:** " + `<:exp:1030683507514687508> ${user.experience.toLocaleString()}` +
+								"\n**Lvl Up Exp:** " + `<:exp:1030683507514687508> ${Math.round(experienceUntilNextLevel).toLocaleString()}` +
+								"\n**Packs Opened:** " + `<:openedIcon:1045911376494874646> ${user.statistics.packsOpened.toLocaleString()}` +
+								"\n**Messages:** " + `<:messagesIcon:1045939184562602046> ${user.statistics.messagesSent.toLocaleString()}`,
 						inline: true
 					},
 					{
 						name: '__``User Info``__',
-						value: 	"**Messages:** " + `<:messagesIcon:1045939184562602046> ${user.statistics.messagesSent.toLocaleString()}` +
-								"\n**Discord:** " + (user.discord ? userMention(user.discord.discordId) : "No linked account") +
+						value: 	"**Discord:** " + (user.discord ? userMention(user.discord.discordId) : "No linked account") +
 								"\n**Joined:** " + time(user.createdAt, TimestampStyles.ShortDate) +
 								"\n**Last Seen:** " + time(user.updatedAt, TimestampStyles.RelativeTime),
 						inline: true
@@ -261,11 +198,11 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 				.addComponents(
 					new ButtonBuilder()
 						.setLabel('View Profile')
-						.setURL(`https://rewrite.blacket.org/stats?name=${user.id}`)
+						.setURL(`${process.env.BASE_URL}/stats?name=${user.id}`)
 						.setStyle(ButtonStyle.Link),
 					new ButtonBuilder()
 						.setLabel('View Clan')
-						.setURL(`https://rewrite.blacket.org/stats?name=${user.id}`)
+						.setURL(`${process.env.BASE_URL}/stats?name=${user.id}`)
 						.setStyle(ButtonStyle.Link)
 				),
 		],
