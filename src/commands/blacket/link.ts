@@ -11,7 +11,8 @@ export default {
         userPermissions: ['SendMessages'],
         botPermissions: ['SendMessages'],
         category: 'Blacket',
-        cooldown: 15
+        cooldown: 15,
+		favourite: true
     },
     async execute(interaction: ChatInputCommandInteraction<'cached'>) {
 		const embed = new EmbedBuilder()

@@ -6,7 +6,7 @@ import SimpleEmbedMaker, { SemType } from '../../misc/simpleEmbedMaker.js';
 export default {
     data: {
         name: 'ping',
-        description: 'Pong!',
+        description: 'Get the bot\'s latency.',
     },
     opt: {
         userPermissions: ['SendMessages'],

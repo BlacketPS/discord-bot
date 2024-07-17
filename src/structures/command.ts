@@ -1,3 +1,4 @@
+import { Permission, PermissionType, UserPermission } from 'blacket-types';
 import type { CommandInteraction, PermissionResolvable, RESTPostAPIApplicationCommandsJSONBody, RESTPostAPIApplicationGuildCommandsJSONBody } from 'discord.js';
 
 interface CustomOptions {
@@ -10,6 +11,10 @@ interface CustomOptions {
      */
     botPermissions?: PermissionResolvable[];
     /**
+     * The permissions the bot needs to run the command
+     */
+    blacketPermissions?: PermissionType[];
+    /**
      * The category the command belongs to
      */
     category?: string;
@@ -17,6 +22,10 @@ interface CustomOptions {
      * The cooldown of the command in seconds
      */
     cooldown?: number;
+    /**
+     * Whether the command shown on the main help page
+     */
+    favourite?: boolean;
 };
 
 /**
@@ -26,7 +35,7 @@ export type Command = {
     /**
      * The data for the command
      */
-    data: RESTPostAPIApplicationCommandsJSONBody | RESTPostAPIApplicationGuildCommandsJSONBody;
+    data: (RESTPostAPIApplicationCommandsJSONBody | RESTPostAPIApplicationGuildCommandsJSONBody) & { description: string };
     /**
      * The custom options for the command
      */

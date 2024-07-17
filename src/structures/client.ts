@@ -9,6 +9,7 @@ import path from 'node:path';
 import { readdir } from 'node:fs';
 import { GlobalFonts } from '@napi-rs/canvas';
 import { ContextMenu } from './contextMenu';
+import { SelectMenu } from './selectMenu';
 
 export class ExtendedClient extends Client {
     constructor() {
@@ -24,6 +25,7 @@ export class ExtendedClient extends Client {
         });
         this.commands = new Collection<string, Command>();
         this.contextMenus = new Collection<string, ContextMenu>();
+        this.selectMenus = new Collection<string, SelectMenu>();
         this.cooldown = new Collection<string, Collection<string, number>>();
         this.sequelize = new SequelizeInstance();
     };
@@ -48,6 +50,15 @@ export class ExtendedClient extends Client {
         for (const contextMenu of contextMenuFiles) {
             this.contextMenus.set(contextMenu.data.name, contextMenu);
             console.log(`Loaded context menu ${contextMenu.data.name}`)
+        }
+
+        // Select Menu handling
+        const selectMenuFolderPath = path.join(__dirname, '../selectmenu');
+        const selectMenuFiles: SelectMenu[] = await loadStructures(selectMenuFolderPath, ['data', 'execute']);
+
+        for (const selectMenu of selectMenuFiles) {
+            this.selectMenus.set(selectMenu.data.custom_id, selectMenu);
+            console.log(`Loaded select menu ${selectMenu.data.custom_id}`)
         }
 
         // Event handling

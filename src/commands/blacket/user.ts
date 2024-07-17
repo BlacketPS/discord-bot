@@ -20,7 +20,8 @@ export default {
         userPermissions: ['SendMessages'],
         botPermissions: ['SendMessages'],
         category: 'Blacket',
-        cooldown: 5
+        cooldown: 5,
+        favourite: true
     },
     async execute(interaction: ChatInputCommandInteraction<'cached'>) {
         try {
