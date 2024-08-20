@@ -23,7 +23,7 @@ export async function loadStructures(path: PathLike, props: [string, string]) {
 
     for (const folder of folders) {
         const filesPath = join(path.toString(), folder);
-        const files = readdirSync(filesPath).filter(file => file.endsWith('.js'));
+        const files = readdirSync(filesPath).filter(file => file.endsWith('.js') || file.endsWith('.ts'));
 
         for (const file of files) {
             const filePath = join(filesPath, file);

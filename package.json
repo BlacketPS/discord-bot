@@ -2,14 +2,15 @@
   "name": "blacket-rewrite-bot",
   "version": "1.0.0",
   "description": "rewrite bot",
-  "main": "src/index.ts",
-  "types": "environment.d.ts",
+  "main": "dist/index.js",
+  "types": "typings/environment.d.ts",
   "scripts": {
+    "dev": "bun --watch ./src/index.ts",
+    "build": "tsc",
+    "start": "node .",
     "clean": "rimraf dist",
-    "build": "tsc --build",
-    "start": "pnpm run clean && pnpm run build && node dist/index.js",
-    "dev": "nodemon --watch 'src/**/*.ts' --exec 'pnpm run start'",
-    "deploy": "pnpm run clean && pnpm run build && node dist/deploy-commands.js"
+    "prisma:gen": "prisma generate --schema prisma",
+    "deploy": "bun run clean && bun run build && node dist/deploy-commands.js"
   },
   "keywords": [],
   "author": "Syfe",
@@ -21,14 +22,18 @@
     "ioredis": "^5.4.1",
     "pg": "^8.11.3",
     "pg-hstore": "^2.3.4",
+    "prisma-generator-typescript-interfaces": "^1.4.0",
     "reflect-metadata": "^0.2.1"
   },
   "devDependencies": {
-    "@types/node": "^20.11.30",
+    "@types/node": "^22.4.1",
     "@types/validator": "^13.11.9",
     "nodemon": "^3.1.0",
     "prisma": "5.18.0",
     "rimraf": "^5.0.5",
-    "typescript": "^5.4.3"
+    "tslib": "^2.6.3",
+    "tsup": "^8.2.4",
+    "tsx": "^4.17.0",
+    "typescript": "^5.5.4"
   }
 }

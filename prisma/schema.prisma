@@ -5,7 +5,7 @@ generator client {
 
 generator typescriptInterfaces {
     provider = "prisma-generator-typescript-interfaces"
-    output   = "../../types/src/interfaces.ts"
+    output   = "../../blacket-rewrite/types/src/interfaces.ts"
     enumType = "both"
 }
 
