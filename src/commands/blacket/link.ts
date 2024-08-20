@@ -25,7 +25,7 @@ export default {
 				new ButtonBuilder()
 					.setLabel('Link account')
 					.setStyle(ButtonStyle.Link)
-					.setURL(`https://discord.com/oauth2/authorize?client_id=${process.env.CLIENT_ID}&response_type=code&redirect_uri=${process.env.BASE_URL}/settings/link-discord&scope=identify`)
+					.setURL(`https://discord.com/oauth2/authorize?client_id=${process.env.BOT_CLIENT_ID}&response_type=code&redirect_uri=${process.env.SERVER_BASE_URL}/settings/link-discord&scope=identify`)
 			);
 
 		await interaction.reply({ embeds: [embed], components: [row] });

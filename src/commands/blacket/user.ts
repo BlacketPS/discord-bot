@@ -36,7 +36,7 @@ export default {
                         .setTitle('❗ Error: User ❗')
                         .setDescription(error.message)
                         .setColor(0x990000)
-                        .setThumbnail(`${process.env.BASE_URL}/content/blooks/Error.png`)
+                        .setThumbnail(`${process.env.VITE_CDN_URL}/content/blooks/Error.png`)
                         .setTimestamp()
                 ]
             });

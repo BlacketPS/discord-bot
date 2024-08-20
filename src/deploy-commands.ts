@@ -35,28 +35,28 @@ import 'dotenv/config'
 	}
 	
 	// Construct and prepare an instance of the REST module
-	const rest = new REST().setToken(process.env.DISCORD_TOKEN);
+	const rest = new REST().setToken(process.env.BOT_DISCORD_TOKEN);
 	
 	try {
 		console.log(`Started refreshing ${commands.length} application (/) commands.`);
 
 		let data: RESTPutAPIApplicationCommandsJSONBody[] | RESTPutAPIApplicationGuildCommandsJSONBody[] = [];
 
-		if (process.env.GUILD_ID) {
+		if (process.env.BOT_GUILD_ID) {
 			// The put method is used to fully refresh all commands in a guild with the current set
 			data = await rest.put(
-				Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID),
+				Routes.applicationGuildCommands(process.env.BOT_CLIENT_ID, process.env.BOT_GUILD_ID),
 				{ body: commands },
 			) as RESTPutAPIApplicationGuildCommandsJSONBody[];
 		} else {
 			// The put method is used to fully refresh all commands in all guilds with the current set
 			data = await rest.put(
-				Routes.applicationCommands(process.env.CLIENT_ID),
+				Routes.applicationCommands(process.env.BOT_CLIENT_ID),
 				{ body: commands },
 			) as RESTPutAPIApplicationCommandsJSONBody[];
 		};
 
-		console.log(`Successfully reloaded ${data.length} application (/) commands ${process.env.GUILD_ID ? `in guild ${process.env.GUILD_ID}` : ''}.`);
+		console.log(`Successfully reloaded ${data.length} application (/) commands ${process.env.BOT_GUILD_ID ? `in guild ${process.env.BOT_GUILD_ID}` : ''}.`);
 	} catch (error) {
 		// And of course, make sure you catch and log any errors!
 		console.error(error);

@@ -34,6 +34,11 @@ async function renderBadge(ctx: Canvas.SKRSContext2D, scale: number, color: stri
 	ctx.drawImage(badge, xBadge, yBadge, badgeSize, badgeSize);
 }
 
+/***
+ * TODO:
+ * - Add custom avatar and banner support
+ * - Add colour support
+*/
 export async function sendUserEmbed(interaction: any, userLookup: any) {
 	const user = await getDbUser(interaction, userLookup);
 
@@ -101,6 +106,8 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	const userAvatar = await Canvas.loadImage(user.avatar.path);
 	ctx.drawImage(userAvatar, 0, 0, 111.83 * scale, 128 * scale);
 
+	console.log(user.banner)
+
 	const userBanner = await Canvas.loadImage(user.banner.path);
 	ctx.drawImage(userBanner, 132.83 * scale, 18.6 * scale, 361.29 * scale, 80 * scale);
 
@@ -123,7 +130,7 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	/**
 	 * Render level star
 	 */
-	const levelStar = await Canvas.loadImage(process.env.CDN_URL + "/static/content/levelStar.png");
+	const levelStar = await Canvas.loadImage(process.env.VITE_CDN_URL + "/content/level.png");
 	ctx.drawImage(levelStar, 127 * scale, 103 * scale, 35 * scale, 35 * scale);
 
 	
@@ -198,12 +205,17 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 				.addComponents(
 					new ButtonBuilder()
 						.setLabel('View Profile')
-						.setURL(`${process.env.BASE_URL}/stats?name=${user.id}`)
+						.setURL(`${process.env.SERVER_BASE_URL}/stats?name=${user.id}`)
 						.setStyle(ButtonStyle.Link),
 					new ButtonBuilder()
 						.setLabel('View Clan')
-						.setURL(`${process.env.BASE_URL}/stats?name=${user.id}`)
-						.setStyle(ButtonStyle.Link)
+						.setURL(`${process.env.SERVER_BASE_URL}/stats?name=${user.id}`)
+						.setStyle(ButtonStyle.Link),
+					new ButtonBuilder()
+						.setLabel('Manage User')
+						.setStyle(ButtonStyle.Danger)
+						.setCustomId('manageUser')
+						.setEmoji('🛠')
 				),
 		],
 		files: [userHeaderAttachment],

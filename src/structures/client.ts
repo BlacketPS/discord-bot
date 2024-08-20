@@ -10,6 +10,7 @@ import { readdir } from 'node:fs';
 import { GlobalFonts } from '@napi-rs/canvas';
 import { ContextMenu } from './contextMenu';
 import { SelectMenu } from './selectMenu';
+import { RedisInstance } from '../redis/redis';
 
 export class ExtendedClient extends Client {
     constructor() {
@@ -28,6 +29,7 @@ export class ExtendedClient extends Client {
         this.selectMenus = new Collection<string, SelectMenu>();
         this.cooldown = new Collection<string, Collection<string, number>>();
         this.sequelize = new SequelizeInstance();
+        this.redis = new RedisInstance();
     };
 
     /**
@@ -80,6 +82,6 @@ export class ExtendedClient extends Client {
      */
     start() {
         this.loadModules();
-        this.login(); // Since the token is named DISCORD_TOKEN in the .env file, we don't need to pass it in here as it will be automatically grabbed.
+        this.login(process.env.BOT_DISCORD_TOKEN);
     };
 };
