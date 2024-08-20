@@ -11,6 +11,7 @@ import { GlobalFonts } from '@napi-rs/canvas';
 import { ContextMenu } from './contextMenu';
 import { SelectMenu } from './selectMenu';
 import { RedisInstance } from '../redis/redis';
+import { AutoComplete } from './autoComplete';
 
 export class ExtendedClient extends Client {
     constructor() {
@@ -25,6 +26,7 @@ export class ExtendedClient extends Client {
             },
         });
         this.commands = new Collection<string, Command>();
+        this.autoCompletes = new Collection<string, AutoComplete>();
         this.contextMenus = new Collection<string, ContextMenu>();
         this.selectMenus = new Collection<string, SelectMenu>();
         this.cooldown = new Collection<string, Collection<string, number>>();
@@ -43,6 +45,16 @@ export class ExtendedClient extends Client {
 
         for (const command of commandFiles) {
             this.commands.set(command.data.name, command);
+            console.log(`Loaded command ${command.data.name}`)
+        }
+
+        // Autocomplete handling
+        const autoCompleteFolderPath = path.join(__dirname, '../autocomplete');
+        const autoCompleteFiles: AutoComplete[] = await loadStructures(autoCompleteFolderPath, ['data', 'execute']);
+
+        for (const autoComplete of autoCompleteFiles) {
+            this.autoCompletes.set(autoComplete.data.name, autoComplete);
+            console.log(`Loaded autocomplete ${autoComplete.data.name}`)
         }
 
         // Context Menu handling
@@ -69,6 +81,7 @@ export class ExtendedClient extends Client {
 
         for (const event of eventFiles) {
             this[event.once ? 'once' : 'on'](event.name, async (...args) => event.execute(...args));
+            console.log(`Loaded event ${event.name}`)
         }
 
         // Load Fonts

@@ -1,4 +1,4 @@
-import { type PermissionResolvable, type PermissionsString, PermissionsBitField, type APIEmbed, type Message } from 'discord.js';
+import { type PermissionResolvable, type PermissionsString, PermissionsBitField, type APIEmbed, type Message, bold, underline, inlineCode } from 'discord.js';
 import { type PathLike, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -126,4 +126,8 @@ export function experienceToLevel(experience: number): number {
 
 export function levelToExperience(level: number): number {
     return Math.pow(level / .805, 2.75);
+}
+
+export function titleTextDiscord(string: string): string {
+    return bold(underline(inlineCode(string)));
 }

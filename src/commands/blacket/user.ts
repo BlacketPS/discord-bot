@@ -12,7 +12,8 @@ export default {
             {
                 name: 'user',
                 type: ApplicationCommandOptionType.String,
-                description: 'The user to get information about.'
+                description: 'The user to get information about.',
+                autocomplete: true
             }
         ]
     },

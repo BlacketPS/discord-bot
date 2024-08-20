@@ -12,13 +12,13 @@ export default {
         const contextMenu = interaction.client.contextMenus.get(interaction.commandName);
 
         if (!contextMenu?.data) {
-            console.error(`No command matching ${interaction.commandName} was found.`);
+            console.error(`No context menu matching ${interaction.commandName} was found.`);
             await interaction.reply({
                 embeds: [
                     simpleEmbedMaker({
                         type: SemType.ERROR,
                         title: 'No command',
-                        description: `There is no command matching ${inlineCode(interaction.commandName)}!`
+                        description: `There is no context menu matching ${inlineCode(interaction.commandName)}!`
                     })
                 ],
                 ephemeral: true,
@@ -36,7 +36,7 @@ export default {
 						simpleEmbedMaker({
 							type: SemType.ERROR,
 							title: 'Unknown',
-							description: `There was an error while executing this command: \n${error.message} \nCheck the console for more info.`
+							description: `There was an error while executing this context menu: \n${error.message} \nCheck the console for more info.`
 						})
 					],
 					ephemeral: true
@@ -47,7 +47,7 @@ export default {
 						simpleEmbedMaker({
 							type: SemType.ERROR,
 							title: 'Unknown',
-							description: `There was an error while executing this command: \n${error.message} \nCheck the console for more info.`
+							description: `There was an error while executing this context menu: \n${error.message} \nCheck the console for more info.`
 						})
 					],
 					ephemeral: true

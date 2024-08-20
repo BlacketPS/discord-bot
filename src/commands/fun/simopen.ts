@@ -14,7 +14,7 @@ export default {
 				type: ApplicationCommandOptionType.String,
 				description: 'Pack to open.',
 				required: true,
-
+				autocomplete: true
 			},
 			{
 				name: 'amount',
