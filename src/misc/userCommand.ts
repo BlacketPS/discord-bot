@@ -43,7 +43,7 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	const user = await getDbUser(interaction, userLookup);
 
 	if (!user) {
-		await interaction.reply({
+		await interaction.editReply({
 			embeds: [
 				SimpleEmbedMaker({
 					type: SemType.ERROR,
@@ -56,14 +56,14 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 		return;
 	}
 
-	
+
 	/**
 	 * Constants
 	*/
 	const scale = 1;
 	const primaryColor = '#1f1f1f';
 	const levelFilledColor = '#00bfff';
-	
+
 	const userLevel = experienceToLevel(user.experience);
 	const experienceUntilNextLevel = levelToExperience(Math.floor(userLevel) + 1) - user.experience;
 
@@ -74,10 +74,10 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 
 	const levelBarX = 148 * scale;
 	const levelBarY = 112 * scale;
-	const levelBarWidth = 345 * scale;
+	const levelBarWidth = 346 * scale;
 	const levelBarHeight = 18 * scale;
 	const levelBarRadius = 10 * scale;
-	const completedLevelWidth = levelBarWidth * ( userLevel % 2 );
+	const completedLevelWidth = levelBarWidth * (userLevel % 2);
 
 
 	/**
@@ -126,14 +126,14 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	await renderRectangleRounded(ctx, levelBarX, levelBarY, levelBarWidth, levelBarHeight, levelBarRadius, primaryColor);
 	await renderRectangleRounded(ctx, levelBarX, levelBarY, completedLevelWidth, levelBarHeight, levelBarRadius, levelFilledColor);
 
-	
+
 	/**
 	 * Render level star
 	 */
 	const levelStar = await Canvas.loadImage(process.env.VITE_CDN_URL + "/content/level.png");
 	ctx.drawImage(levelStar, 127 * scale, 103 * scale, 35 * scale, 35 * scale);
 
-	
+
 	/**
 	 * Render text
 	 *  - Level
@@ -159,13 +159,13 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	ctx.font = `${16 * scale}px Nunito`;
 	ctx.fillText(user.title.name, 313.475 * scale, 78.6 * scale);
 
-	
+
 	/**
 	 * Send embed
 	*/
 	const userHeaderAttachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'user.png' });
 
-	await interaction.reply({
+	await interaction.editReply({
 		embeds: [
 			new EmbedBuilder()
 				.setColor(0x2b2d31)
@@ -175,25 +175,25 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 				.setFields([
 					{
 						name: '__``Stats``__',
-						value: 	"**Tokens:** " + `<:token:1030683509616037948> ${user.tokens.toLocaleString()}` +
-								"\n**Level:** " + `<:level:1030683508596809748> ${Math.floor(userLevel)}` +
-								"\n**Exp:** " + `<:exp:1030683507514687508> ${user.experience.toLocaleString()}` +
-								"\n**Lvl Up Exp:** " + `<:exp:1030683507514687508> ${Math.round(experienceUntilNextLevel).toLocaleString()}` +
-								"\n**Packs Opened:** " + `<:openedIcon:1045911376494874646> ${user.statistics.packsOpened.toLocaleString()}` +
-								"\n**Messages:** " + `<:messagesIcon:1045939184562602046> ${user.statistics.messagesSent.toLocaleString()}`,
+						value: "**Tokens:** " + `<:token:1030683509616037948> ${user.tokens.toLocaleString()}` +
+							"\n**Level:** " + `<:level:1030683508596809748> ${Math.floor(userLevel)}` +
+							"\n**Exp:** " + `<:exp:1030683507514687508> ${user.experience.toLocaleString()}` +
+							"\n**Lvl Up Exp:** " + `<:exp:1030683507514687508> ${Math.round(experienceUntilNextLevel).toLocaleString()}` +
+							"\n**Packs Opened:** " + `<:openedIcon:1045911376494874646> ${user.statistics.packsOpened.toLocaleString()}` +
+							"\n**Messages:** " + `<:messagesIcon:1045939184562602046> ${user.statistics.messagesSent.toLocaleString()}`,
 						inline: true
 					},
 					{
 						name: '__``User Info``__',
-						value: 	"**Discord:** " + (user.discord ? userMention(user.discord.discordId) : "No linked account") +
-								"\n**Joined:** " + time(user.createdAt, TimestampStyles.ShortDate) +
-								"\n**Last Seen:** " + time(user.updatedAt, TimestampStyles.RelativeTime),
+						value: "**Discord:** " + (user.discord ? userMention(user.discord.discordId) : "No linked account") +
+							"\n**Joined:** " + time(user.createdAt, TimestampStyles.ShortDate) +
+							"\n**Last Seen:** " + time(user.updatedAt, TimestampStyles.RelativeTime),
 						inline: true
 					},
 					{
 						name: '__``Standing``__',
-						value: 	"**Banned:** " + "<:error:1033851534754201832>" +
-								"\n**Muted:** " + "<:error:1033851534754201832>",
+						value: "**Banned:** " + "<:error:1033851534754201832>" +
+							"\n**Muted:** " + "<:error:1033851534754201832>",
 						inline: true
 					},
 				])

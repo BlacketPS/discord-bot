@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "ES2020", // don't touch this, sequelize mixins are fucked
+    "target": "ES2020", // don't touch this, sequelize mixins are fucked - 🦘
 
-    "experimentalDecorators": true, // again don't touch either of these because fucking decorators
+    "experimentalDecorators": true, // again don't touch either of these because fucking decorators - 🦘
     "emitDecoratorMetadata": true,
 
     "rootDir": "./src",
@@ -11,7 +11,7 @@
     "sourceMap": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": false, // fuck strict mode, its shit.
+    "strict": false, // fuck strict mode, its shit. - 🦘
     "skipLibCheck": true
   }
 }

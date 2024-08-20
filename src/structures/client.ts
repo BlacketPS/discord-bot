@@ -4,8 +4,8 @@ import { loadStructures } from '../misc/util';
 
 import type { Command } from './command';
 import type { Event } from './event';
-import { SequelizeInstance } from '../database/sequelize';
-import path from 'node:path';
+import { PrismaInstance } from '../database/prisma';
+import path, { join } from 'node:path';
 import { readdir } from 'node:fs';
 import { GlobalFonts } from '@napi-rs/canvas';
 import { ContextMenu } from './contextMenu';
@@ -28,7 +28,7 @@ export class ExtendedClient extends Client {
         this.contextMenus = new Collection<string, ContextMenu>();
         this.selectMenus = new Collection<string, SelectMenu>();
         this.cooldown = new Collection<string, Collection<string, number>>();
-        this.sequelize = new SequelizeInstance();
+        this.prisma = new PrismaInstance();
         this.redis = new RedisInstance();
     };
 
@@ -72,9 +72,8 @@ export class ExtendedClient extends Client {
         }
 
         // Load Fonts
-        // TODO: load these dynamically somehow
-        GlobalFonts.registerFromPath('/var/www/blacket-rewrite-bot/assets/Nunito-Bold.ttf', 'Nunito');
-        GlobalFonts.registerFromPath('/var/www/blacket-rewrite-bot/assets/TitanOne-Regular.ttf', 'Titan One');
+        GlobalFonts.registerFromPath(join(__dirname, '..', '..', '/assets/Nunito-Bold.ttf'), 'Nunito');
+        GlobalFonts.registerFromPath(join(__dirname, '..', '..', '/assets/TitanOne-Regular.ttf'), 'Titan One');
     }
 
     /**

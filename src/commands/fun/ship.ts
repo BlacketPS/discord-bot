@@ -4,9 +4,9 @@ import type { Command } from '../../structures/command.js';
 import { generateShipImage } from '../../misc/shipCommand.js';
 
 export default {
-    data: {
-        name: 'ship',
-        description: 'Ship two users and see how well they match.',
+	data: {
+		name: 'ship',
+		description: 'Ship two users and see how well they match.',
 		options: [
 			{
 				name: 'dominant',
@@ -21,15 +21,17 @@ export default {
 				required: true
 			}
 		]
-    },
-    opt: {
-        userPermissions: ['SendMessages'],
-        botPermissions: ['SendMessages'],
-        category: 'Fun',
-        cooldown: 5
-    },
-    async execute(interaction: ChatInputCommandInteraction<'cached'>) {
-        const dominant = interaction.options.getUser('dominant');
+	},
+	opt: {
+		userPermissions: ['SendMessages'],
+		botPermissions: ['SendMessages'],
+		category: 'Fun',
+		cooldown: 5
+	},
+	async execute(interaction: ChatInputCommandInteraction<'cached'>) {
+		await interaction.deferReply();
+
+		const dominant = interaction.options.getUser('dominant');
 		const submissive = interaction.options.getUser('submissive');
 
 		const ship = Math.floor(Math.random() * 100) + 1;
@@ -44,7 +46,7 @@ export default {
 			.setDescription(`**${dominant.displayName}** and **${submissive.displayName}** match **${ship.toLocaleString()}%**.`)
 			.setColor('#ff0000')
 			.setImage('attachment://ship.png');
-		
-		await interaction.reply({ embeds: [embed], files: [attachment] });
-    }
+
+		await interaction.editReply({ embeds: [embed], files: [attachment] });
+	}
 } satisfies Command;

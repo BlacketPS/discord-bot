@@ -11,7 +11,6 @@ export default {
         if (!interaction.isCommand()) return;
         if (interaction.isContextMenuCommand()) return;
         if (!interaction.inCachedGuild()) return;
-
         const command = interaction.client.commands.get(interaction.commandName);
 
         if (!command?.data) {

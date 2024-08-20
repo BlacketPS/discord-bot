@@ -3,7 +3,7 @@ import { ColorResolvable, EmbedBuilder } from "discord.js";
 export enum SemType {
     ERROR,
     INFO
-} 
+}
 
 interface SemOptions {
     type: SemType;
@@ -16,12 +16,12 @@ interface SemOptions {
 };
 
 /**
- * Simple Embed Maker v1.0.0
+ * Simple Embed Maker v1.0.0 - 🦘
  * ---
  * Create simple embeds for use in Discord bots
  * (these embeds should mainly be used for just providing a better user experience, nothing spectacular)
  */
-export default function(semOptions: SemOptions) {
+export default function (semOptions: SemOptions) {
     const isError = semOptions.type === SemType.ERROR;
     return new EmbedBuilder()
         .setTitle(isError ? `❗ Error: ${semOptions.title} ❗` : semOptions.title)

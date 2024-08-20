@@ -5,9 +5,9 @@ import { openPack } from 'blacket-types';
 import { resolvePackNameToId } from '../../misc/packUtil.js';
 
 export default {
-    data: {
-        name: 'simopen',
-        description: 'Simulate opening one or many packs.',
+	data: {
+		name: 'simopen',
+		description: 'Simulate opening one or many packs.',
 		options: [
 			{
 				name: 'pack',
@@ -27,17 +27,17 @@ export default {
 				description: 'Booster chance, defaults to whatever the current Blacket booster is if not set.'
 			}
 		]
-    },
-    opt: {
-        userPermissions: ['SendMessages'],
-        botPermissions: ['SendMessages'],
-        category: 'Fun',
-        cooldown: 5
-    },
-    async execute(interaction: ChatInputCommandInteraction<'cached'>) {
+	},
+	opt: {
+		userPermissions: ['SendMessages'],
+		botPermissions: ['SendMessages'],
+		category: 'Fun',
+		cooldown: 0o05
+	},
+	async execute(interaction: ChatInputCommandInteraction<'cached'>) {
 		await interaction.deferReply();
 
-        const packName = interaction.options.getString('pack', true);
+		const packName = interaction.options.getString('pack', true);
 		const amount = interaction.options.getInteger('amount') ?? 1;
 		const booster = interaction.options.getInteger('booster') ?? 1;
 
@@ -56,21 +56,21 @@ export default {
 		}
 
 		try {
-            var packId = await resolvePackNameToId(interaction, packName);
-        } catch (error) {
-            await interaction.editReply({
-                embeds: [
-                    new EmbedBuilder()
-                        .setTitle('❗ Error: Pack ❗')
-                        .setDescription(error.message)
-                        .setColor(0x990000)
-                        .setThumbnail(`${process.env.VITE_CDN_URL}/content/blooks/Error.png`)
-                        .setTimestamp()
-                ]
-            });
+			var packId = await resolvePackNameToId(interaction, packName);
+		} catch (error) {
+			await interaction.editReply({
+				embeds: [
+					new EmbedBuilder()
+						.setTitle('❗ Error: Pack ❗')
+						.setDescription(error.message)
+						.setColor(0x990000)
+						.setThumbnail(`${process.env.VITE_CDN_URL}/content/blooks/Error.png`)
+						.setTimestamp()
+				]
+			});
 			return;
-        }
-		
+		}
+
 
 		const packBlooks = await interaction.client.redis.getBlooksFromPack(packId);
 
@@ -102,5 +102,5 @@ export default {
 			.setTimestamp();
 
 		await interaction.editReply({ embeds: [embed] });
-    }
+	}
 } satisfies Command;

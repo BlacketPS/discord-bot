@@ -12,22 +12,22 @@
     "deploy": "pnpm run clean && pnpm run build && node dist/deploy-commands.js"
   },
   "keywords": [],
-  "author": "Syfe",
+  "author": "🦘",
   "dependencies": {
     "@napi-rs/canvas": "^0.1.52",
+    "@prisma/client": "5.18.0",
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.5",
     "ioredis": "^5.4.1",
     "pg": "^8.11.3",
     "pg-hstore": "^2.3.4",
-    "reflect-metadata": "^0.2.1",
-    "sequelize": "^6.37.1",
-    "sequelize-typescript": "^2.1.6"
+    "reflect-metadata": "^0.2.1"
   },
   "devDependencies": {
     "@types/node": "^20.11.30",
     "@types/validator": "^13.11.9",
     "nodemon": "^3.1.0",
+    "prisma": "5.18.0",
     "rimraf": "^5.0.5",
     "typescript": "^5.4.3"
   }

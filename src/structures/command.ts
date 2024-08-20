@@ -1,4 +1,4 @@
-import { Permission, PermissionType, UserPermission } from 'blacket-types';
+import type { PermissionType } from 'blacket-types';
 import type { CommandInteraction, PermissionResolvable, RESTPostAPIApplicationCommandsJSONBody, RESTPostAPIApplicationGuildCommandsJSONBody } from 'discord.js';
 
 interface CustomOptions {

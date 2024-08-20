@@ -1,10 +1,8 @@
 import { ChatInputCommandInteraction, UserContextMenuCommandInteraction, inlineCode, userMention } from "discord.js"
-import { Group, Resource, User, UserDiscord, UserGroup } from "blacket-types";
 import { User as DiscordUser } from "discord.js";
 import SimpleEmbedMaker, { SemType } from './simpleEmbedMaker.js';
-import { Repository } from "sequelize-typescript";
 
-// easy fetchers from command
+// easy fetchers from command - 🦘
 
 export async function getUserFromCommand(interaction: ChatInputCommandInteraction<'cached'>) {
 	const userResolvable = interaction.options.getString('user');
@@ -25,7 +23,7 @@ export async function getUserFromCommand(interaction: ChatInputCommandInteractio
 		// if the resolvable is a string, we finally assume it's a Blacket username
 		return await resolveBlacketUsernameToBlacketId(interaction, userResolvable);
 	} catch (error) {
-		if (error instanceof Error)  {
+		if (error instanceof Error) {
 			await interactionReplyError(interaction, error);
 			return false;
 		}
@@ -37,7 +35,7 @@ export async function getUserFromContextMenu(interaction: UserContextMenuCommand
 	try {
 		return await resolveDiscordUserToBlacketId(interaction, interaction.targetUser);
 	} catch (error) {
-		if (error instanceof Error)  {
+		if (error instanceof Error) {
 			await interactionReplyError(interaction, error);
 			return false;
 		}
@@ -68,11 +66,13 @@ async function resolveDiscordUserResolvableToDiscordUserId(discordUserResolvable
 }
 
 async function resolveBlacketUsernameToBlacketId(interaction: ChatInputCommandInteraction<'cached'> | UserContextMenuCommandInteraction<'cached'>, usernameToResolve: string): Promise<string> {
-	const user = await interaction.client.sequelize.getRepository(User).findOne({
+	const user = await interaction.client.prisma.user.findFirst({
 		where: {
 			username: usernameToResolve
 		},
-		attributes: ['username', 'id']
+		select: {
+			id: true
+		}
 	});
 
 	if (!user) throw new Error(`No Blacket user found for username ${inlineCode(usernameToResolve)}!`);
@@ -81,11 +81,13 @@ async function resolveBlacketUsernameToBlacketId(interaction: ChatInputCommandIn
 }
 
 async function resolveDiscordUserToBlacketId(interaction: ChatInputCommandInteraction<'cached'> | UserContextMenuCommandInteraction<'cached'>, discordUser: DiscordUser): Promise<string> {
-	const userDiscordResolved = await interaction.client.sequelize.getRepository(UserDiscord).findOne({
+	const userDiscordResolved = await interaction.client.prisma.userDiscord.findFirst({
 		where: {
 			discordId: discordUser.id
 		},
-		attributes: ['discordId', 'userId']
+		select: {
+			userId: true
+		}
 	});
 
 	if (!userDiscordResolved) throw new Error(`No linked Blacket user for ${userMention(discordUser.id)}!`);
@@ -94,26 +96,26 @@ async function resolveDiscordUserToBlacketId(interaction: ChatInputCommandIntera
 }
 
 export async function getDbUser(interaction: ChatInputCommandInteraction<'cached'> | UserContextMenuCommandInteraction<'cached'>, userLookup: any) {
-	const UserRepo: Repository<User> = interaction.client.sequelize.getRepository(User);
-	const user = await UserRepo.findOne({
+	const user = await interaction.client.prisma.user.findFirst({
 		where: {
 			id: userLookup
 		},
-		include: [
-			{
-				model: interaction.client.sequelize.getRepository(UserGroup),
-				include: [
-					{
-						model: interaction.client.sequelize.getRepository(Group),
-						include: [
-							{
-								model: interaction.client.sequelize.getRepository(Resource)
-							}
-						]
+		include: {
+			groups: {
+				include: {
+					group: {
+						include: {
+							image: true
+						}
 					}
-				]
+				}
 			},
-			'avatar', 'banner', 'title', 'discord', 'statistics']
+			avatar: true,
+			banner: true,
+			title: true,
+			discord: true,
+			statistics: true
+		}
 	});
 
 	return user;
