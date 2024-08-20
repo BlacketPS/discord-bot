@@ -12,7 +12,7 @@
     "deploy": "pnpm run clean && pnpm run build && node dist/deploy-commands.js"
   },
   "keywords": [],
-  "author": "🦘",
+  "author": "Syfe",
   "dependencies": {
     "@napi-rs/canvas": "^0.1.52",
     "@prisma/client": "5.18.0",

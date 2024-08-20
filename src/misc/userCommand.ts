@@ -74,7 +74,7 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 
 	const levelBarX = 148 * scale;
 	const levelBarY = 112 * scale;
-	const levelBarWidth = 346 * scale;
+	const levelBarWidth = 345 * scale;
 	const levelBarHeight = 18 * scale;
 	const levelBarRadius = 10 * scale;
 	const completedLevelWidth = levelBarWidth * (userLevel % 2);

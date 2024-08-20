@@ -32,7 +32,7 @@ export default {
 		userPermissions: ['SendMessages'],
 		botPermissions: ['SendMessages'],
 		category: 'Fun',
-		cooldown: 0o05
+		cooldown: 5
 	},
 	async execute(interaction: ChatInputCommandInteraction<'cached'>) {
 		await interaction.deferReply();
