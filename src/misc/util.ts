@@ -1,4 +1,5 @@
-import { type PermissionResolvable, type PermissionsString, PermissionsBitField, type APIEmbed, type Message, bold, underline, inlineCode } from 'discord.js';
+import { Group } from '@prisma/client';
+import { type PermissionResolvable, type PermissionsString, PermissionsBitField, type APIEmbed, type Message, bold, underline, inlineCode, ChatInputCommandInteraction } from 'discord.js';
 import { type PathLike, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -129,5 +130,32 @@ export function levelToExperience(level: number): number {
 }
 
 export function titleTextDiscord(string: string): string {
-    return bold(underline(inlineCode(string)));
+    return `**__\`\`${string}\`\`__**`;
+}
+
+export async function resolveUserPermissions(interaction: ChatInputCommandInteraction<'cached'>, blacketId: string): Promise<string[]> {
+    const user = await interaction.client.prisma.user.findFirst({
+        where: {
+            id: blacketId
+        },
+        select: {
+            permissions: true,
+            groups: {
+                select: {
+                    group: {
+                        select: {
+                            permissions: true
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    const permissions = [...new Set([
+        ...user.permissions,
+        ...user.groups.reduce((acc: any, group: {group: Group}) => [...acc, ...group.group.permissions], [])
+    ])]
+
+    return permissions;
 }

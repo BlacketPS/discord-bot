@@ -6,6 +6,7 @@
   "types": "typings/environment.d.ts",
   "scripts": {
     "dev": "bun --watch ./src/index.ts",
+    "dev:attach": "bun --inspect-wait=localhost:6499/ ./src/index.ts",
     "build": "tsc",
     "start": "node .",
     "clean": "rimraf dist",
@@ -18,12 +19,13 @@
     "@leeoniya/ufuzzy": "^1.0.14",
     "@napi-rs/canvas": "^0.1.52",
     "@prisma/client": "5.18.0",
+    "@zastix/prisma-generator-typescript-interfaces": "^1.4.2",
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.5",
     "ioredis": "^5.4.1",
+    "parse-duration": "^1.1.0",
     "pg": "^8.11.3",
     "pg-hstore": "^2.3.4",
-    "prisma-generator-typescript-interfaces": "^1.4.0",
     "reflect-metadata": "^0.2.1"
   },
   "devDependencies": {

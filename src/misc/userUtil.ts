@@ -5,7 +5,7 @@ import SimpleEmbedMaker, { SemType } from './simpleEmbedMaker.js';
 // easy fetchers from command - 🦘
 
 export async function getUserFromCommand(interaction: ChatInputCommandInteraction<'cached'>) {
-	const userResolvable = interaction.options.getString('user');
+	const userResolvable = interaction.options.getString('user', true);
 
 	try {
 		// if no arg is supplied, we return the user who sent the command
@@ -80,7 +80,7 @@ async function resolveBlacketUsernameToBlacketId(interaction: ChatInputCommandIn
 	return user.id;
 }
 
-async function resolveDiscordUserToBlacketId(interaction: ChatInputCommandInteraction<'cached'> | UserContextMenuCommandInteraction<'cached'>, discordUser: DiscordUser): Promise<string> {
+export async function resolveDiscordUserToBlacketId(interaction: ChatInputCommandInteraction<'cached'> | UserContextMenuCommandInteraction<'cached'>, discordUser: DiscordUser): Promise<string> {
 	const userDiscordResolved = await interaction.client.prisma.userDiscord.findFirst({
 		where: {
 			discordId: discordUser.id
