@@ -1,4 +1,4 @@
-import { EmbedBuilder, type ChatInputCommandInteraction, ActionRowBuilder, ButtonBuilder, ButtonStyle, ApplicationCommandOptionType } from 'discord.js';
+import { EmbedBuilder, type ChatInputCommandInteraction, ActionRowBuilder, ButtonBuilder, ButtonStyle, ApplicationCommandOptionType, userMention, inlineCode } from 'discord.js';
 
 import type { Command } from '../../structures/command.js';
 import parseDuration from 'parse-duration';
@@ -62,6 +62,8 @@ export default {
 
 		const blacketUserId = await getUserFromCommand(interaction);
 
+		const duration = durationResolvable ? new Date(Date.now() + parseDuration(durationResolvable)) : new Date(0);
+
 		// we ban the user from Blacket no matter what
 		// since our resolver will match for Blacket user id first
 		if (blacketUserId) {
@@ -75,11 +77,11 @@ export default {
 					},
 					staff: {
 						connect: {
-							id: userResolvable
+							id: staffBlacketUserId
 						}
 					},
 					reason: reason,
-					expiresAt: durationResolvable ? new Date(Date.now() + parseDuration(durationResolvable)) : new Date(0)
+					expiresAt: duration
 				}
 			})
 		}
@@ -93,22 +95,24 @@ export default {
 		} else if (blacketUserId) {
 			// now we check if the Blacket user is linked to a discord user
 			// if so, we ban them from discord
-			const discordUserLinked = await interaction.client.prisma.userDiscord.findFirst({
+			var discordUserLinked = await interaction.client.prisma.userDiscord.findFirst({
 				where: {
 					userId: blacketUserId
 				}
 			});
 
 			if (discordUserLinked) {
-				const discordUser = await interaction.guild.members.fetch(discordUserLinked.discordId);
-				await discordUser.ban({ reason: reason,  });
+				try {
+					const discordUser = await interaction.guild.members.fetch(discordUserLinked.discordId);
+					if (discordUser) await discordUser.ban({ reason: reason,  });
+				} catch {}
 			}
 		}
 
 
 		const embed = new EmbedBuilder()
 			.setTitle('Ban')
-			.setDescription(`Banned ${userResolvable} for ${durationResolvable ?? 'perm'} with reason: ${reason}`)
+			.setDescription(`Banned ${inlineCode(userResolvable)} ${discordUserLinked ? `(${userMention(discordUserLinked.discordId)})` : ""} until ${!durationResolvable ? inlineCode('perm') : `<t:${Math.floor(duration.getTime()/1000)}:D>`} with reason: ${inlineCode(reason)}`)
 			.setColor(0x990000);
 
 		await interaction.editReply({ embeds: [embed] });

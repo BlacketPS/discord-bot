@@ -5,7 +5,7 @@ import SimpleEmbedMaker, { SemType } from './simpleEmbedMaker.js';
 // easy fetchers from command - 🦘
 
 export async function getUserFromCommand(interaction: ChatInputCommandInteraction<'cached'>) {
-	const userResolvable = interaction.options.getString('user', true);
+	const userResolvable = interaction.options.getString('user');
 
 	try {
 		// if no arg is supplied, we return the user who sent the command

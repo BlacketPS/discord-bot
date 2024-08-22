@@ -43,7 +43,7 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	const user = await getDbUser(interaction, userLookup);
 
 	if (!user) {
-		await interaction.editReply({
+		await interaction.reply({
 			embeds: [
 				SimpleEmbedMaker({
 					type: SemType.ERROR,
@@ -106,8 +106,6 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	const userAvatar = await Canvas.loadImage(user.avatar.path);
 	ctx.drawImage(userAvatar, 0, 0, 111.83 * scale, 128 * scale);
 
-	console.log(user.banner)
-
 	const userBanner = await Canvas.loadImage(user.banner.path);
 	ctx.drawImage(userBanner, 132.83 * scale, 18.6 * scale, 361.29 * scale, 80 * scale);
 
@@ -165,7 +163,7 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	*/
 	const userHeaderAttachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'user.png' });
 
-	await interaction.editReply({
+	await interaction.reply({
 		embeds: [
 			new EmbedBuilder()
 				.setColor(0x2b2d31)

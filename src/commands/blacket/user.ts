@@ -25,14 +25,13 @@ export default {
         favourite: true
     },
     async execute(interaction: ChatInputCommandInteraction<'cached'>) {
-        await interaction.deferReply();
         try {
             const userLookup = await getUserFromCommand(interaction);
             if (!userLookup) return; // return here because we do error handling and user ux within our util
 
             await sendUserEmbed(interaction, userLookup);
         } catch (error) {
-            await interaction.editReply({
+            await interaction.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle('❗ Error: User ❗')
