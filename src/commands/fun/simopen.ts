@@ -1,7 +1,7 @@
 import { type ChatInputCommandInteraction, ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
 
 import type { Command } from '../../structures/command.js';
-import { openPack } from 'blacket-types';
+import { openPack } from '@blacket/types';
 import { resolvePackNameToId } from '../../misc/packUtil.js';
 
 export default {

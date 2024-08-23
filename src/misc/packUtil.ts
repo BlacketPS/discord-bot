@@ -1,4 +1,4 @@
-import { Pack } from "blacket-types";
+import { Pack } from "@blacket/core";
 import { ChatInputCommandInteraction, inlineCode } from "discord.js";
 
 export async function resolvePackNameToId(interaction: ChatInputCommandInteraction<'cached'>, packName: string): Promise<number> {

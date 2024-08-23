@@ -1,4 +1,4 @@
-import { Group } from '@prisma/client';
+import { Group } from '@blacket/core';
 import { type PermissionResolvable, type PermissionsString, PermissionsBitField, type APIEmbed, type Message, bold, underline, inlineCode, ChatInputCommandInteraction } from 'discord.js';
 import { type PathLike, readdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -38,7 +38,7 @@ export async function loadStructures(path: PathLike, props: [string, string]) {
     return fileData;
 }
 
-/** 
+/**
  * Shows the missing permissions.
  * @param {PermissionResolvable} memberPerms - The member's permissions
  * @param {PermissionResolvable} requiredPerms - The required permissions

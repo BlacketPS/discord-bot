@@ -2,7 +2,7 @@ import { EmbedBuilder, type ChatInputCommandInteraction, ActionRowBuilder, Butto
 
 import type { Command } from '../../structures/command.js';
 import parseDuration from 'parse-duration';
-import { PermissionType, PunishmentType } from '@prisma/client';
+import { PermissionType, PunishmentType } from '@blacket/core';
 import { getUserFromCommand, resolveDiscordUserToBlacketId } from '../../misc/userUtil.js';
 import { resolveUserPermissions } from '../../misc/util.js';
 

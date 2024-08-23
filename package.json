@@ -26,7 +26,9 @@
     "parse-duration": "^1.1.0",
     "pg": "^8.11.3",
     "pg-hstore": "^2.3.4",
-    "reflect-metadata": "^0.2.1"
+    "reflect-metadata": "^0.2.1",
+    "@blacket/core": "link:@blacket/core",
+    "@blacket/types": "link:@blacket/types"
   },
   "devDependencies": {
     "@types/node": "^22.4.1",
@@ -37,5 +39,8 @@
     "tsup": "^8.2.4",
     "tsx": "^4.17.0",
     "typescript": "^5.5.4"
-  }
+  },
+  "trustedDependencies": [
+    "@blacket/core"
+  ]
 }
