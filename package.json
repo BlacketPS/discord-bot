@@ -41,6 +41,7 @@
     "typescript": "^5.5.4"
   },
   "trustedDependencies": [
-    "@blacket/core"
+    "@blacket/core",
+    "@blacket/types"
   ]
 }
