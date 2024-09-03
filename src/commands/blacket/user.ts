@@ -15,7 +15,9 @@ export default {
                 description: 'The user to get information about.',
                 autocomplete: true
             }
-        ]
+        ],
+        "integration_types": [0, 1],
+        "contexts": [0, 1, 2]
     },
     opt: {
         userPermissions: ['SendMessages'],
@@ -31,6 +33,7 @@ export default {
 
             await sendUserEmbed(interaction, userLookup);
         } catch (error) {
+            console.error(error)
             await interaction.reply({
                 embeds: [
                     new EmbedBuilder()

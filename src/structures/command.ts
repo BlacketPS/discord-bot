@@ -35,7 +35,7 @@ export type Command = {
     /**
      * The data for the command
      */
-    data: (RESTPostAPIApplicationCommandsJSONBody | RESTPostAPIApplicationGuildCommandsJSONBody) & { description: string };
+    data: (RESTPostAPIApplicationCommandsJSONBody | RESTPostAPIApplicationGuildCommandsJSONBody) & { description: string, integration_types: number[], contexts: number[] };
     /**
      * The custom options for the command
      */

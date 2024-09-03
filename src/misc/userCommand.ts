@@ -72,8 +72,6 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	const badgeContainerPadding = 10 * scale;
 	const badgeSize = 32 * scale;
 
-	const levelBarX = 148 * scale;
-	const levelBarY = 112 * scale;
 	const levelBarWidth = 345 * scale;
 	const levelBarHeight = 18 * scale;
 	const levelBarRadius = 10 * scale;
@@ -86,11 +84,16 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	 */
 	let groups = user.groups.map(group => group.group);
 	groups = groups.sort((a, b) => b.priority - a.priority);
+	groups = groups.filter(group => group.image && group.image.path);
 	const badges = groups.map(group => group.image.path);
 
 	const badgeHolderContainerSize = Math.ceil(badges.length / badgeContainersPerRow) * badgeContainerSize;
 
-	const sizeX = 494 * scale;
+	const userAvatar = await Canvas.loadImage(user.avatar.path);
+
+	const userAvatarAdjustedX = (userAvatar.naturalWidth / userAvatar.naturalHeight) * 128;
+	
+	const sizeX = (382 + userAvatarAdjustedX) * scale;
 	const sizeY = (138 * scale) + badgeHolderContainerSize;
 
 
@@ -99,15 +102,14 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	 */
 	const canvas = Canvas.createCanvas(sizeX, sizeY);
 	const ctx = canvas.getContext('2d');
-
+	
 	/**
 	 * Render user header
-	 */
-	const userAvatar = await Canvas.loadImage(user.avatar.path);
-	ctx.drawImage(userAvatar, 0, 0, 111.83 * scale, 128 * scale);
+	*/
+	ctx.drawImage(userAvatar, 0, 0, userAvatarAdjustedX * scale, 128 * scale);
 
 	const userBanner = await Canvas.loadImage(user.banner.path);
-	ctx.drawImage(userBanner, 132.83 * scale, 18.6 * scale, 361.29 * scale, 80 * scale);
+	ctx.drawImage(userBanner, (21 + userAvatarAdjustedX) * scale, 18.6 * scale, 361.29 * scale, 80 * scale);
 
 
 	/**
@@ -116,6 +118,9 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	for (let i = 0; i < badges.length; i++) {
 		await renderBadge(ctx, scale, primaryColor, i, badges, badgeContainersPerRow, badgeContainerSize, badgeContainerPadding, badgeSize);
 	}
+
+	const levelBarX = (36.17 + userAvatarAdjustedX) * scale;
+	const levelBarY = 112 * scale;
 
 
 	/**
@@ -129,7 +134,7 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	 * Render level star
 	 */
 	const levelStar = await Canvas.loadImage(process.env.VITE_CDN_URL + "/content/level.png");
-	ctx.drawImage(levelStar, 127 * scale, 103 * scale, 35 * scale, 35 * scale);
+	ctx.drawImage(levelStar, (15 + userAvatarAdjustedX) * scale, 103 * scale, 35 * scale, 35 * scale);
 
 
 	/**
@@ -142,20 +147,20 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	ctx.textAlign = 'center';
 
 	ctx.font = `${20 * scale}px Titan One`;
-	ctx.fillText(Math.floor(userLevel).toString(), 145.5 * scale, 127 * scale);
+	ctx.fillText(Math.floor(userLevel).toString(), (33.67 + userAvatarAdjustedX) * scale, 127 * scale);
 	ctx.strokeStyle = '#000000';
 	ctx.lineWidth = 1.5 * scale;
-	ctx.strokeText(Math.floor(userLevel).toString(), 145.5 * scale, 127 * scale);
+	ctx.strokeText(Math.floor(userLevel).toString(), (33.67 + userAvatarAdjustedX) * scale, 127 * scale);
 
 	ctx.shadowColor = '#000000';
 	ctx.shadowOffsetX = 2 * scale;
 	ctx.shadowOffsetY = 2 * scale;
 	ctx.shadowBlur = 1;
 	ctx.font = `${32 * scale}px Nunito`;
-	ctx.fillText(user.username, 313.475 * scale, 55.6 * scale);
+	ctx.fillText(user.username, (201.645 + userAvatarAdjustedX) * scale, 55.6 * scale);
 
 	ctx.font = `${16 * scale}px Nunito`;
-	ctx.fillText(user.title.name, 313.475 * scale, 78.6 * scale);
+	ctx.fillText(user.title.name, (201.645 + userAvatarAdjustedX) * scale, 78.6 * scale);
 
 
 	/**
@@ -173,12 +178,17 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 				.setFields([
 					{
 						name: '__``Stats``__',
-						value: "**Tokens:** " + `<:token:1030683509616037948> ${user.tokens.toLocaleString()}` +
-							"\n**Level:** " + `<:level:1030683508596809748> ${Math.floor(userLevel)}` +
-							"\n**Exp:** " + `<:exp:1030683507514687508> ${user.experience.toLocaleString()}` +
-							"\n**Lvl Up Exp:** " + `<:exp:1030683507514687508> ${Math.round(experienceUntilNextLevel).toLocaleString()}` +
-							"\n**Packs Opened:** " + `<:openedIcon:1045911376494874646> ${user.statistics.packsOpened.toLocaleString()}` +
-							"\n**Messages:** " + `<:messagesIcon:1045939184562602046> ${user.statistics.messagesSent.toLocaleString()}`,
+						value: "**Tokens:** " + `<:token:1280309219194703893> ${user.tokens.toLocaleString()}` +
+							"\n**Level:** " + `<:level:1280309182439886988> ${Math.floor(userLevel)}` +
+							"\n**Exp:** " + `<:experience:1280309208700686426> ${user.experience.toLocaleString()}` +
+							"\n**Lvl Up Exp:** " + `<:experience:1280309208700686426> ${Math.round(experienceUntilNextLevel).toLocaleString()}`,
+							
+						inline: true
+					},
+					{
+						name: '‎ ',
+						value: "\n**Packs Opened:** " + `<:packsopened:1280309708514922537> ${user.statistics.packsOpened.toLocaleString()}` +
+							"\n**Messages:** " + `<:messagessent:1280309727598739508> ${user.statistics.messagesSent.toLocaleString()}`,
 						inline: true
 					},
 					{
@@ -188,12 +198,12 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 							"\n**Last Seen:** " + time(user.updatedAt, TimestampStyles.RelativeTime),
 						inline: true
 					},
-					{
-						name: '__``Standing``__',
-						value: "**Banned:** " + "<:error:1033851534754201832>" +
-							"\n**Muted:** " + "<:error:1033851534754201832>",
-						inline: true
-					},
+					// {
+					// 	name: '__``Punishments``__',
+					// 	value: "**Banned:** " + "No" +
+					// 		"\n**Muted:** " + "No",
+					// 	inline: true
+					// },
 				])
 				.setFooter({ text: `ID: ${user.id}  •  Clan: None` })
 				.setImage('https://i.imgur.com/8NdaHgw.png')
@@ -209,11 +219,11 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 						.setLabel('View Clan')
 						.setURL(`${process.env.SERVER_BASE_URL}/stats?name=${user.id}`)
 						.setStyle(ButtonStyle.Link),
-					new ButtonBuilder()
-						.setLabel('Manage User')
-						.setStyle(ButtonStyle.Danger)
-						.setCustomId('manageUser')
-						.setEmoji('🛠')
+					// new ButtonBuilder()
+					// 	.setLabel('Manage User')
+					// 	.setStyle(ButtonStyle.Danger)
+					// 	.setCustomId('manageUser')
+					// 	.setEmoji('🛠')
 				),
 		],
 		files: [userHeaderAttachment],
