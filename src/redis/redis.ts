@@ -1,4 +1,4 @@
-import { Blook, Rarity } from "blacket-types";
+import { Blook, Rarity } from "@blacket/types";
 import { Redis } from "ioredis"
 
 export enum DataKey {
@@ -16,15 +16,15 @@ export enum DataKey {
 }
 
 export class RedisInstance extends Redis {
-	prefix: string;
+    prefix: string;
 
-	constructor() {
-		super({ })
+    constructor() {
+        super({})
 
-		this.prefix = process.env.SERVER_DATABASE_NAME;
-	}
+        this.prefix = process.env.SERVER_DATABASE_NAME;
+    }
 
-	async getAllFromKey(key: string) {
+    async getAllFromKey(key: string) {
         const keys = await this.keys(`${this.prefix}:${key}:*`);
 
         let data = keys.length ? await this.mget(keys) : [];
@@ -37,7 +37,7 @@ export class RedisInstance extends Redis {
         return JSON.parse(await this.get(`${this.prefix}:${key}:${value}`));
     }
 
-	async getBlooksFromPack(packId: number): Promise<Blook[]> {
+    async getBlooksFromPack(packId: number): Promise<Blook[]> {
         const blooks = await this.getAllFromKey(DataKey.BLOOK);
 
         return blooks.filter((blook) => blook.packId === packId && (!blook.onlyOnDay || blook.onlyOnDay === new Date().getDay() + 1));

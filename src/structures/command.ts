@@ -1,4 +1,4 @@
-import type { PermissionType } from 'blacket-types';
+import type { PermissionType } from '@blacket/types';
 import type { CommandInteraction, PermissionResolvable, RESTPostAPIApplicationCommandsJSONBody, RESTPostAPIApplicationGuildCommandsJSONBody } from 'discord.js';
 
 interface CustomOptions {
@@ -11,7 +11,7 @@ interface CustomOptions {
      */
     botPermissions?: PermissionResolvable[];
     /**
-     * The permissions the bot needs to run the command
+     * The blacket permissions the user needs to run the command
      */
     blacketPermissions?: PermissionType[];
     /**
@@ -35,7 +35,7 @@ export type Command = {
     /**
      * The data for the command
      */
-    data: (RESTPostAPIApplicationCommandsJSONBody | RESTPostAPIApplicationGuildCommandsJSONBody) & { description: string, integration_types: number[], contexts: number[] };
+    data: (RESTPostAPIApplicationCommandsJSONBody | RESTPostAPIApplicationGuildCommandsJSONBody) & { description: string, integration_types?: number[], contexts?: number[] };
     /**
      * The custom options for the command
      */

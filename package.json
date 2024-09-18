@@ -16,10 +16,13 @@
   "keywords": [],
   "author": "Syfe",
   "dependencies": {
+    "@blacket/core": "link:@blacket/core",
+    "@blacket/types": "link:@blacket/types",
     "@leeoniya/ufuzzy": "^1.0.14",
     "@napi-rs/canvas": "^0.1.52",
     "@prisma/client": "5.18.0",
     "@zastix/prisma-generator-typescript-interfaces": "^1.4.2",
+    "bufferutil": "^4.0.8",
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.5",
     "ioredis": "^5.4.1",
@@ -27,8 +30,8 @@
     "pg": "^8.11.3",
     "pg-hstore": "^2.3.4",
     "reflect-metadata": "^0.2.1",
-    "@blacket/core": "link:@blacket/core",
-    "@blacket/types": "link:@blacket/types"
+    "utf-8-validate": "^6.0.4",
+    "zlib-sync": "^0.1.9"
   },
   "devDependencies": {
     "@types/node": "^22.4.1",
@@ -42,6 +45,11 @@
   },
   "trustedDependencies": [
     "@blacket/core",
-    "@blacket/types"
+    "@blacket/types",
+    "@prisma/client",
+    "bufferutil",
+    "esbuild",
+    "utf-8-validate",
+    "zlib-sync"
   ]
 }

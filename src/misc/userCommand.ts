@@ -85,14 +85,14 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	let groups = user.groups.map(group => group.group);
 	groups = groups.sort((a, b) => b.priority - a.priority);
 	groups = groups.filter(group => group.image && group.image.path);
-	const badges = groups.map(group => group.image.path);
+	const badges = groups.map(group => group.image.path.replace('{cdn}', process.env.VITE_CDN_URL));
 
 	const badgeHolderContainerSize = Math.ceil(badges.length / badgeContainersPerRow) * badgeContainerSize;
 
-	const userAvatar = await Canvas.loadImage(user.avatar.path);
+	const userAvatar = await Canvas.loadImage(user.avatar.path.replace('{cdn}', process.env.VITE_CDN_URL));
 
 	const userAvatarAdjustedX = (userAvatar.naturalWidth / userAvatar.naturalHeight) * 128;
-	
+
 	const sizeX = (382 + userAvatarAdjustedX) * scale;
 	const sizeY = (138 * scale) + badgeHolderContainerSize;
 
@@ -102,13 +102,13 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	 */
 	const canvas = Canvas.createCanvas(sizeX, sizeY);
 	const ctx = canvas.getContext('2d');
-	
+
 	/**
 	 * Render user header
 	*/
 	ctx.drawImage(userAvatar, 0, 0, userAvatarAdjustedX * scale, 128 * scale);
 
-	const userBanner = await Canvas.loadImage(user.banner.path);
+	const userBanner = await Canvas.loadImage(user.banner.path.replace('{cdn}', process.env.VITE_CDN_URL));
 	ctx.drawImage(userBanner, (21 + userAvatarAdjustedX) * scale, 18.6 * scale, 361.29 * scale, 80 * scale);
 
 
@@ -182,7 +182,7 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 							"\n**Level:** " + `<:level:1280309182439886988> ${Math.floor(userLevel)}` +
 							"\n**Exp:** " + `<:experience:1280309208700686426> ${user.experience.toLocaleString()}` +
 							"\n**Lvl Up Exp:** " + `<:experience:1280309208700686426> ${Math.round(experienceUntilNextLevel).toLocaleString()}`,
-							
+
 						inline: true
 					},
 					{
@@ -193,7 +193,7 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 					},
 					{
 						name: '__``User Info``__',
-						value: "**Discord:** " + (user.discord ? userMention(user.discord.discordId) : "No linked account") +
+						value: "**Discord:** " + (user.discord ? userMention(user.discord.discordId) : "N/A") +
 							"\n**Joined:** " + time(user.createdAt, TimestampStyles.ShortDate) +
 							"\n**Last Seen:** " + time(user.updatedAt, TimestampStyles.RelativeTime),
 						inline: true
