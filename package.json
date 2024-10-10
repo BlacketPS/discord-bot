@@ -23,6 +23,7 @@
     "@prisma/client": "5.18.0",
     "@zastix/prisma-generator-typescript-interfaces": "^1.4.2",
     "bufferutil": "^4.0.8",
+    "discord-api-types": "^0.37.101",
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.5",
     "ioredis": "^5.4.1",
