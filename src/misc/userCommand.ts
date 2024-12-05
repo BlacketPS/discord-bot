@@ -85,11 +85,11 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	let groups = user.groups.map(group => group.group);
 	groups = groups.sort((a, b) => b.priority - a.priority);
 	groups = groups.filter(group => group.image && group.image.path);
-	const badges = groups.map(group => group.image.path.replace('{cdn}', process.env.VITE_CDN_URL));
+	const badges = groups.map(group => group.image.path.replace('{cdn}', process.env.VITE_MEDIA_PATH));
 
 	const badgeHolderContainerSize = Math.ceil(badges.length / badgeContainersPerRow) * badgeContainerSize;
 
-	const userAvatar = await Canvas.loadImage(user.avatar.path.replace('{cdn}', process.env.VITE_CDN_URL));
+	const userAvatar = await Canvas.loadImage(user.avatar.path.replace('{cdn}', process.env.VITE_MEDIA_PATH));
 
 	const userAvatarAdjustedX = (userAvatar.naturalWidth / userAvatar.naturalHeight) * 128;
 
@@ -108,7 +108,7 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	*/
 	ctx.drawImage(userAvatar, 0, 0, userAvatarAdjustedX * scale, 128 * scale);
 
-	const userBanner = await Canvas.loadImage(user.banner.path.replace('{cdn}', process.env.VITE_CDN_URL));
+	const userBanner = await Canvas.loadImage(user.banner.path.replace('{cdn}', process.env.VITE_MEDIA_PATH));
 	ctx.drawImage(userBanner, (21 + userAvatarAdjustedX) * scale, 18.6 * scale, 361.29 * scale, 80 * scale);
 
 
@@ -133,7 +133,7 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	/**
 	 * Render level star
 	 */
-	const levelStar = await Canvas.loadImage(process.env.VITE_CDN_URL + "/content/level.png");
+	const levelStar = await Canvas.loadImage(process.env.VITE_MEDIA_PATH + "/content/level.png");
 	ctx.drawImage(levelStar, (15 + userAvatarAdjustedX) * scale, 103 * scale, 35 * scale, 35 * scale);
 
 

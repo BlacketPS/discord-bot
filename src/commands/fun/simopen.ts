@@ -48,7 +48,7 @@ export default {
 						.setTitle('❗ Error: Amount ❗')
 						.setDescription('You cannot open more than 1,000,000 packs at once.')
 						.setColor(0x990000)
-						.setThumbnail(`${process.env.VITE_CDN_URL}/content/blooks/Error.png`)
+						.setThumbnail(`${process.env.VITE_MEDIA_PATH}/content/blooks/Error.png`)
 						.setTimestamp()
 				]
 			});
@@ -64,7 +64,7 @@ export default {
 						.setTitle('❗ Error: Pack ❗')
 						.setDescription(error.message)
 						.setColor(0x990000)
-						.setThumbnail(`${process.env.VITE_CDN_URL}/content/blooks/Error.png`)
+						.setThumbnail(`${process.env.VITE_MEDIA_PATH}/content/blooks/Error.png`)
 						.setTimestamp()
 				]
 			});

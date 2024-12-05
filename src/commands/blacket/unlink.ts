@@ -30,7 +30,7 @@ export default {
 						.setTitle('❗ Error: Unlink ❗')
 						.setDescription('You are not linked to any Blacket account.')
 						.setColor(0x990000)
-						.setThumbnail(`${process.env.VITE_CDN_URL}/content/blooks/Error.png`)
+						.setThumbnail(`${process.env.VITE_MEDIA_PATH}/content/blooks/Error.png`)
 						.setTimestamp()
 				],
 				ephemeral: true
