@@ -67,7 +67,7 @@ export default {
 		// we ban the user from Blacket no matter what
 		// since our resolver will match for Blacket user id first
 		if (blacketUserId) {
-			await interaction.client.prisma.userPunishment.create({
+			await interaction.client.prisma.punishment.create({
 				data: {
 					type: PunishmentType.BAN,
 					user: {
