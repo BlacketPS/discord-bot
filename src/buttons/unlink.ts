@@ -26,10 +26,10 @@ export default {
 			await interaction.reply({
 				embeds: [
 					new EmbedBuilder()
-						.setTitle('❗ Error: Unlink ❗')
+						.setTitle('❌ Error: Unlink')
 						.setDescription('You are not linked to any Blacket account.')
 						.setColor(0x990000)
-						.setThumbnail(`${process.env.VITE_MEDIA_PATH}/content/blooks/Error.png`)
+						.setThumbnail(`${process.env.VITE_MEDIA_PATH}/content/icons/error.png`)
 						.setTimestamp()
 				],
 				ephemeral: true

@@ -45,10 +45,10 @@ export default {
 			await interaction.reply({
 				embeds: [
 					new EmbedBuilder()
-						.setTitle('❗ Error: User ❗')
+						.setTitle('❌ Error: User')
 						.setDescription(error.message)
 						.setColor(0x990000)
-						.setThumbnail(`${process.env.VITE_MEDIA_PATH}/content/blooks/Error.png`)
+						.setThumbnail(`${process.env.VITE_MEDIA_PATH}/content/icons/error.png`)
 						.setTimestamp()
 				]
 			});

@@ -10,7 +10,7 @@ export default {
     async execute(interaction: StringSelectMenuInteraction<'cached'>) {
 		if (interaction.user.id !== interaction.message.interaction.user.id) {
 			const failedEmbed = new EmbedBuilder()
-				.setTitle('❗ Error: Select Menu ❗')
+				.setTitle('❌ Error: Select Menu')
 				.setDescription('You are not allowed to use this select menu.')
 				.setColor(0x990000)
 				.setTimestamp();

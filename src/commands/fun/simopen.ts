@@ -45,10 +45,10 @@ export default {
 			await interaction.editReply({
 				embeds: [
 					new EmbedBuilder()
-						.setTitle('❗ Error: Amount ❗')
+						.setTitle('❌ Error: Amount')
 						.setDescription('You cannot open more than 1,000,000 packs at once.')
 						.setColor(0x990000)
-						.setThumbnail(`${process.env.VITE_MEDIA_PATH}/content/blooks/Error.png`)
+						.setThumbnail(`${process.env.VITE_MEDIA_PATH}/content/icons/error.png`)
 						.setTimestamp()
 				]
 			});
@@ -61,10 +61,10 @@ export default {
 			await interaction.editReply({
 				embeds: [
 					new EmbedBuilder()
-						.setTitle('❗ Error: Pack ❗')
+						.setTitle('❌ Error: Pack')
 						.setDescription(error.message)
 						.setColor(0x990000)
-						.setThumbnail(`${process.env.VITE_MEDIA_PATH}/content/blooks/Error.png`)
+						.setThumbnail(`${process.env.VITE_MEDIA_PATH}/content/icons/error.png`)
 						.setTimestamp()
 				]
 			});
@@ -80,9 +80,10 @@ export default {
 			const blook = packBlooks.filter((blook) => blook.id === openedBlooks)[0];
 
 			const embed = new EmbedBuilder()
-				.setTitle(`📦 Pack Opened 📦`)
+				.setTitle(`📦 Pack Opened`)
 				.setDescription(`You simulated opening a ${packName} pack and got:\n\n${blook.name}`)
 				.setColor(0x00FF00)
+                .setThumbnail(`${process.env.VITE_MEDIA_PATH}/content/icons/success.png`)
 				.setTimestamp();
 
 			await interaction.editReply({ embeds: [embed] });
@@ -96,9 +97,10 @@ export default {
 		}).join('\n');
 
 		const embed = new EmbedBuilder()
-			.setTitle(`📦 ${amount} Pack${amount > 0 ? 's' : ''} Opened 📦`)
+			.setTitle(`📦 ${amount} Pack${amount > 0 ? 's' : ''} Opened`)
 			.setDescription(`You simulated opening a ${packName} pack and got:\n\n${blookCountString}`)
 			.setColor(0x00FF00)
+            .setThumbnail(`${process.env.VITE_MEDIA_PATH}/content/icons/success.png`)
 			.setTimestamp();
 
 		await interaction.editReply({ embeds: [embed] });
