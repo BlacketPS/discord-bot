@@ -89,7 +89,9 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 
 	const badgeHolderContainerSize = Math.ceil(badges.length / badgeContainersPerRow) * badgeContainerSize;
 
-	const userAvatar = await Canvas.loadImage(user.avatar.path.replace('{cdn}', process.env.VITE_MEDIA_PATH));
+    // TODO: make this work with the new avatar system
+    const userAvatar = await Canvas.loadImage("https://blacket.org/content/logo.webp");
+	// const userAvatar = await Canvas.loadImage(user.avatar.path.replace('{cdn}', process.env.VITE_MEDIA_PATH));
 
 	const userAvatarAdjustedX = (userAvatar.naturalWidth / userAvatar.naturalHeight) * 128;
 
@@ -108,7 +110,9 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
 	*/
 	ctx.drawImage(userAvatar, 0, 0, userAvatarAdjustedX * scale, 128 * scale);
 
-	const userBanner = await Canvas.loadImage(user.banner.path.replace('{cdn}', process.env.VITE_MEDIA_PATH));
+    // TODO: make this work with the new banner system
+    const userBanner = await Canvas.loadImage("https://blacket.org/content/banners/Default.webp");
+	// const userBanner = await Canvas.loadImage(user.banner.path.replace('{cdn}', process.env.VITE_MEDIA_PATH));
 	ctx.drawImage(userBanner, (21 + userAvatarAdjustedX) * scale, 18.6 * scale, 361.29 * scale, 80 * scale);
 
 
