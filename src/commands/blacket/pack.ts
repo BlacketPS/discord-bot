@@ -1,25 +1,15 @@
-import { EmbedBuilder, type ChatInputCommandInteraction, ApplicationCommandOptionType, bold, ColorResolvable } from 'discord.js';
+import { EmbedBuilder, type ChatInputCommandInteraction, ApplicationCommandOptionType, bold, ColorResolvable, MessageFlags, ContainerBuilder, SeparatorSpacingSize } from 'discord.js';
 
 import type { Command } from '../../structures/command.js';
-import { titleTextDiscord } from '../../misc/util.js';
-
-const RarityEmoji = {
-    "Common": '<:common:1040120690147328040>',
-    "Uncommon": '<:uncommon:1031049539802640445>',
-    "Rare": '<:rare:1031049538984742972>',
-    "Epic": '<:epic:1031049542361170040>',
-    "Legendary": '<:legendary:1031049541107069030>',
-    "Chroma": '<:chroma:1031049540658282536>',
-    "Mystical": '<:mystical:1031049658266558517>',
-    "Unique": '<:unique:1216503452364963880>',
-    "Iridescent": '<a:iridescent:1100457898687070318>'
-};
+import Emojis from '../../misc/emojis.js';
+import { ResourcePathTransformer } from '../../misc/transformer.js';
+import { text } from 'node:stream/consumers';
 
 export default {
     data: {
         name: 'pack',
         description: 'View pack information.',
-		options: [
+        options: [
             {
                 name: 'pack',
                 type: ApplicationCommandOptionType.String,
@@ -34,46 +24,95 @@ export default {
         botPermissions: ['SendMessages'],
         category: 'Blacket',
         cooldown: 5,
-		favourite: true
+        favourite: true
     },
     async execute(interaction: ChatInputCommandInteraction<'cached'>) {
-		const packName = interaction.options.getString('pack', true);
+        const packName = interaction.options.getString('pack', true);
 
         const pack = await interaction.client.prisma.pack.findFirst({
             where: {
                 name: packName
             },
             include: {
-                resource: true
+                image: true
             }
         });
 
+        const embed = new EmbedBuilder()
+            .setTitle(packName)
+            .setDescription(`${Emojis.Token} **Price:** ${pack?.price ?? 'N/A'}\n\n** **`)
+            .setThumbnail(ResourcePathTransformer(pack.image.path));
+
         const packBlooks = await interaction.client.redis.getBlooksFromPack(pack.id);
         const sortedPackBlooks = packBlooks.sort((a, b) => a.priority - b.priority);
-
         const totalChance = packBlooks.reduce((acc, blook) => acc + blook.chance, 0);
+        const blooksByRarity = sortedPackBlooks.reduce((acc, blook) => {
+            if (!blook.rarityId) {
+                return acc;
+            }
+            if (!acc[blook.rarityId]) {
+                acc[blook.rarityId] = [];
+            }
+            acc[blook.rarityId].push(blook);
+            return acc;
+        }, {});
 
-        const formattedBlooks = await Promise.all(
-            sortedPackBlooks
-                .map(async (blook) => {
-                    const rarity = await interaction.client.redis.getRarityNameFromId(blook.rarityId);
-                    console.log(rarity)
-                    const emoji = await RarityEmoji[rarity.name]
-                    const chance = (blook.chance / totalChance) * 100;
+        const fields = [];
 
-                    return `${emoji} ${blook.name} (${chance}%)`
-                }) 
-        );
+        let i = 1;
+        for (const rarityId of Object.keys(blooksByRarity)) {
+            const rarityBlooks = blooksByRarity[rarityId];
+            const rarity = await interaction.client.redis.getRarityNameFromId(Number(rarityId));
+            const emoji = await Emojis[rarity.name] || Emojis.Common;
+            const blooks = [];
 
-        const embed = new EmbedBuilder()
-            .setColor(pack.innerColor as ColorResolvable)
-            .setTitle(pack.name)
-            .setDescription(`${bold("Price:")} <:token:1030683509616037948> ${pack.price}
+            for (const blook of rarityBlooks) {
+                const chance = (blook.chance / totalChance) * 100;
+                blooks.push(`-# - **${blook.name}** (${chance > 1 ? chance.toFixed(1) : chance.toFixed(3)}%)`);
+            }
 
-            ${titleTextDiscord("Blooks")}
-            ${formattedBlooks.join('\n')}`)
-            .setThumbnail(pack.resource.path);
+            fields.push({
+                name: `${emoji} ${rarity.name}`,
+                value: blooks.join('\n'),
+                inline: true
+            })
 
-		await interaction.reply({ embeds: [embed] });
+            // embed.addFields({
+            //     name: `${emoji} ${rarity.name}`,
+            //     value: blooks.join('\n'),
+            //     inline: true
+            // });
+
+            // if (i % 2 === 0 && !(i >= Object.keys(blooksByRarity).length)) {
+            //     embed.addFields({
+            //         name: '** **',
+            //         value: '** **'
+            //     })
+            // }
+
+            i++;
+        }
+
+        let halfwayThrough = Math.floor(fields.length / 2)
+
+        let arrayFirstHalf = fields.slice(0, halfwayThrough);
+        let arraySecondHalf = fields.slice(halfwayThrough, fields.length);
+
+        for (let i = 0; i < arrayFirstHalf.length; i++) {
+            if (arraySecondHalf[i]) {
+                embed.addFields(arrayFirstHalf[i], arraySecondHalf[i])
+            } else {
+                embed.addFields(arrayFirstHalf[i]);
+            }
+
+            embed.addFields({
+                name: '** **',
+                value: '** **'
+            })
+        }
+
+        await interaction.reply({
+            embeds: [embed]
+        });
     }
 } satisfies Command;

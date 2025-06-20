@@ -43,6 +43,13 @@ export class RedisInstance extends Redis {
         return blooks.filter((blook) => blook.packId === packId && (!blook.onlyOnDay || blook.onlyOnDay === new Date().getDay() + 1));
     }
 
+    async getRaritiesFromBlooks(blooks: Blook[]): Promise<Rarity[]> {
+        const rarityIds = Array.from(new Set(blooks.map((blook) => blook.rarityId)));
+        const rarities = await this.getAllFromKey(DataKey.RARITY);
+
+        return rarities.filter((rarity) => rarityIds.includes(rarity.id));
+    }
+
     async getRarityNameFromId(rarityId: number): Promise<Rarity> {
         return this.getKey(DataKey.RARITY, rarityId);
     }

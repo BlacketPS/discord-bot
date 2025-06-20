@@ -71,13 +71,13 @@ export default {
 			return;
 		}
 
-
 		const packBlooks = await interaction.client.redis.getBlooksFromPack(packId);
+        const packRarities = await interaction.client.redis.getRaritiesFromBlooks(packBlooks);
 
-		const openedBlooks = await openPack(packId, packBlooks, booster, amount)
+		let openedBlooks = await openPack(packBlooks, packRarities, amount, booster)
 
 		if (typeof openedBlooks === 'number') {
-			const blook = packBlooks.filter((blook) => blook.id === openedBlooks)[0];
+			const blook = packBlooks.filter((blook) => blook.id === openedBlooks[0].blookId)[0];
 
 			const embed = new EmbedBuilder()
 				.setTitle(`📦 Pack Opened`)
@@ -90,10 +90,13 @@ export default {
 			return;
 		}
 
-		const blookCountString = Object.entries(openedBlooks).map(([blookId, count]) => {
-			const blook = packBlooks.filter((blook) => blook.id === parseInt(blookId))[0];
+        const totalBlooks = openedBlooks.reduce((acc, { normal, shiny }) => acc + normal + shiny, 0);
 
-			return `${blook.name} x${count}`;
+		openedBlooks = openedBlooks.sort((a, b) => (b.normal + b.shiny) - (a.normal + a.shiny));
+		const blookCountString = openedBlooks.map(({blookId, normal, shiny}) => {
+			const blook = packBlooks.filter((blook) => blook.id === Number(blookId))[0];
+
+			return `${blook.name} x${normal} (x${shiny} Shiny)  - (${((normal + shiny) / totalBlooks * 100).toFixed(5)}%)`;
 		}).join('\n');
 
 		const embed = new EmbedBuilder()
