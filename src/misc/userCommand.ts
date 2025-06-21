@@ -1,4 +1,4 @@
-import { AttachmentBuilder, EmbedBuilder, TimestampStyles, time, userMention, ActionRowBuilder, ButtonBuilder, ButtonStyle, inlineCode } from 'discord.js';
+import { AttachmentBuilder, EmbedBuilder, TimestampStyles, time, userMention, ActionRowBuilder, ButtonBuilder, ButtonStyle, inlineCode, parseEmoji } from 'discord.js';
 
 import SimpleEmbedMaker, { SemType } from './simpleEmbedMaker.js';
 import { getDbUser } from './userUtil.js';
@@ -174,6 +174,8 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
     */
     const userHeaderAttachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'user.png' });
 
+    const userIdEmojiId = parseEmoji(Emojis.UserID).id;
+
     await interaction.reply({
         embeds: [
             new EmbedBuilder()
@@ -212,7 +214,7 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
                     // 	inline: true
                     // },
                 ])
-                .setFooter({ text: `ID: ${user.id}  •  Clan: None` })
+                .setFooter({ iconURL: `https://cdn.discordapp.com/emojis/${userIdEmojiId}.png`, text: `ID: ${user.id}  •  Clan: None` })
                 .setImage('https://i.imgur.com/8NdaHgw.png')
         ],
         components: [

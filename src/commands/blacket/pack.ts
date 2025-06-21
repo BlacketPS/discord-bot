@@ -1,9 +1,8 @@
-import { EmbedBuilder, type ChatInputCommandInteraction, ApplicationCommandOptionType, bold, ColorResolvable, MessageFlags, ContainerBuilder, SeparatorSpacingSize } from 'discord.js';
+import { EmbedBuilder, type ChatInputCommandInteraction, ApplicationCommandOptionType } from 'discord.js';
 
 import type { Command } from '../../structures/command.js';
 import Emojis from '../../misc/emojis.js';
 import { ResourcePathTransformer } from '../../misc/transformer.js';
-import { text } from 'node:stream/consumers';
 
 export default {
     data: {
@@ -38,6 +37,19 @@ export default {
             }
         });
 
+        if (!pack) {
+            interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Pack not found')
+                        .setDescription(`No pack found for name of ${packName}!`)
+                        .setColor('#FF0000')
+                ],
+                ephemeral: true
+            });
+            return;
+        }
+
         const embed = new EmbedBuilder()
             .setTitle(packName)
             .setDescription(`${Emojis.Token} **Price:** ${pack?.price ?? 'N/A'}\n\n** **`)
@@ -59,7 +71,6 @@ export default {
 
         const fields = [];
 
-        let i = 1;
         for (const rarityId of Object.keys(blooksByRarity)) {
             const rarityBlooks = blooksByRarity[rarityId];
             const rarity = await interaction.client.redis.getRarityNameFromId(Number(rarityId));
@@ -76,27 +87,12 @@ export default {
                 value: blooks.join('\n'),
                 inline: true
             })
-
-            // embed.addFields({
-            //     name: `${emoji} ${rarity.name}`,
-            //     value: blooks.join('\n'),
-            //     inline: true
-            // });
-
-            // if (i % 2 === 0 && !(i >= Object.keys(blooksByRarity).length)) {
-            //     embed.addFields({
-            //         name: '** **',
-            //         value: '** **'
-            //     })
-            // }
-
-            i++;
         }
 
-        let halfwayThrough = Math.floor(fields.length / 2)
+        const halfwayThrough = Math.floor(fields.length / 2)
 
-        let arrayFirstHalf = fields.slice(0, halfwayThrough);
-        let arraySecondHalf = fields.slice(halfwayThrough, fields.length);
+        const arrayFirstHalf = fields.slice(0, halfwayThrough);
+        const arraySecondHalf = fields.slice(halfwayThrough, fields.length);
 
         for (let i = 0; i < arrayFirstHalf.length; i++) {
             if (arraySecondHalf[i]) {

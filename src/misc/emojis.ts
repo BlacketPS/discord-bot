@@ -19,4 +19,5 @@ export default {
     "Level": "<:level:1280309182439886988>",
     "PacksOpened": "<:packsopened:1280309708514922537>",
     "Messages": "<:message:1384953158589091950>",
+    "Chance": "🎲"
 }
