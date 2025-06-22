@@ -1,4 +1,4 @@
-import { type ChatInputCommandInteraction, inlineCode } from 'discord.js';
+import { type ChatInputCommandInteraction, inlineCode, MessageFlags } from 'discord.js';
 
 import type { Command } from '../../structures/command.js';
 import SimpleEmbedMaker, { SemType } from '../../misc/simpleEmbedMaker.js';
@@ -24,7 +24,7 @@ export default {
                         description: "Please wait a bit after the bot has just started to get accurate websocket ping!"
                     })
                 ],
-                ephemeral: true
+                flags: [MessageFlags.Ephemeral]
             })
             return;
         }

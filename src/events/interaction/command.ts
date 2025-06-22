@@ -1,4 +1,4 @@
-import { Events, inlineCode, Collection, bold, CommandInteraction, CacheType } from 'discord.js';
+import { Events, inlineCode, Collection, bold, CommandInteraction, CacheType, MessageFlags } from 'discord.js';
 
 import { missingPerms } from '../../misc/util.js';
 
@@ -21,7 +21,7 @@ export default {
                         description: `There is no command matching ${inlineCode(interaction.commandName)}!`
                     })
                 ],
-                ephemeral: true,
+                flags: [MessageFlags.Ephemeral]
             });
             return;
         };
@@ -39,7 +39,7 @@ export default {
                             description: `There was an error while executing this command: \n${error.message} \nCheck the console for more info.`
                         })
                     ],
-                    ephemeral: true
+                    flags: [MessageFlags.Ephemeral]
                 });
             } else {
                 await interaction.reply({
@@ -50,7 +50,7 @@ export default {
                             description: `There was an error while executing this command: \n${error.message} \nCheck the console for more info.`
                         })
                     ],
-                    ephemeral: true
+                    flags: [MessageFlags.Ephemeral]
                 });
             }
         }

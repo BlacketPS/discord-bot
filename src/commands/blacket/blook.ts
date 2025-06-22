@@ -1,4 +1,4 @@
-import { EmbedBuilder, type ChatInputCommandInteraction, ApplicationCommandOptionType, ColorResolvable } from 'discord.js';
+import { EmbedBuilder, type ChatInputCommandInteraction, ApplicationCommandOptionType, ColorResolvable, MessageFlags } from 'discord.js';
 
 import type { Command } from '../../structures/command.js';
 import Emojis from '../../misc/emojis.js';
@@ -48,7 +48,7 @@ export default {
                         .setDescription(`No blook found for name of ${blookName}!`)
                         .setColor('#FF0000')
                 ],
-                ephemeral: true
+                flags: [MessageFlags.Ephemeral]
             });
             return;
         }

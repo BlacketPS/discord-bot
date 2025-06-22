@@ -1,4 +1,4 @@
-import { EmbedBuilder, type ChatInputCommandInteraction, ApplicationCommandOptionType } from 'discord.js';
+import { EmbedBuilder, type ChatInputCommandInteraction, ApplicationCommandOptionType, MessageFlags } from 'discord.js';
 
 import type { Command } from '../../structures/command.js';
 import Emojis from '../../misc/emojis.js';
@@ -45,7 +45,7 @@ export default {
                         .setDescription(`No pack found for name of ${packName}!`)
                         .setColor('#FF0000')
                 ],
-                ephemeral: true
+                flags: [MessageFlags.Ephemeral]
             });
             return;
         }

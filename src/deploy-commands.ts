@@ -62,7 +62,6 @@ import 'dotenv/config'
             // rest.put(Routes.applicationCommands(process.env.BOT_CLIENT_ID), { body: [] })
             //     .then(() => console.log('Successfully deleted all application commands.'))
             //     .catch(console.error);
-            return;
         };
 
         console.log(`Successfully reloaded ${data.length} application (/) commands ${process.env.BOT_GUILD_ID ? `in guild ${process.env.BOT_GUILD_ID}` : ''}`);

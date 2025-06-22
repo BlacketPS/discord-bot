@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, UserContextMenuCommandInteraction, inlineCode, userMention } from "discord.js"
+import { ChatInputCommandInteraction, MessageFlags, UserContextMenuCommandInteraction, inlineCode, userMention } from "discord.js"
 import { User as DiscordUser } from "discord.js";
 import SimpleEmbedMaker, { SemType } from './simpleEmbedMaker.js';
 
@@ -53,7 +53,7 @@ async function interactionReplyError(interaction: ChatInputCommandInteraction<'c
                 description: error.message
             })
         ],
-        ephemeral: true
+        flags: [MessageFlags.Ephemeral]
     });
 }
 

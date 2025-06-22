@@ -1,4 +1,4 @@
-import { AttachmentBuilder, EmbedBuilder, TimestampStyles, time, userMention, ActionRowBuilder, ButtonBuilder, ButtonStyle, inlineCode, parseEmoji } from 'discord.js';
+import { AttachmentBuilder, EmbedBuilder, TimestampStyles, time, userMention, ActionRowBuilder, ButtonBuilder, ButtonStyle, inlineCode, parseEmoji, MessageFlags } from 'discord.js';
 
 import SimpleEmbedMaker, { SemType } from './simpleEmbedMaker.js';
 import { getDbUser } from './userUtil.js';
@@ -52,7 +52,7 @@ export async function sendUserEmbed(interaction: any, userLookup: any) {
                     description: `No user found for username/id of ${inlineCode(userLookup)}!`
                 })
             ],
-            ephemeral: true
+            flags: [MessageFlags.Ephemeral]
         });
         return;
     }
