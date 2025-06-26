@@ -3,6 +3,8 @@ import { EmbedBuilder, type ChatInputCommandInteraction, ApplicationCommandOptio
 import type { Command } from '../../structures/command.js';
 import Emojis from '../../misc/emojis.js';
 import { ResourcePathTransformer } from '../../misc/transformer.js';
+import path from 'node:path';
+import fs from 'node:fs';
 
 export default {
     data: {
