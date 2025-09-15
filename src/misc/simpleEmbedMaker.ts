@@ -29,5 +29,5 @@ export default function (semOptions: SemOptions) {
         .setTitle(isError ? `❌ Error: ${semOptions.title} ` : semOptions.title)
         .setDescription(semOptions.description)
         .setColor(semOptions.color ?? isError ? 0x990000 : 0x000080)
-        .setThumbnail(isError ? `${process.env.VITE_MEDIA_PATH}/content/icons/error.png` : semOptions.thumbnail ?? '')
+        .setThumbnail(isError ? `${process.env.VITE_MEDIA_URL}/content/icons/error.png` : semOptions.thumbnail ?? '')
 }

@@ -48,7 +48,7 @@ export default {
 						.setTitle('❌ Error: Amount')
 						.setDescription('You cannot open more than 1,000,000 packs at once.')
 						.setColor(0x990000)
-						.setThumbnail(`${process.env.VITE_MEDIA_PATH}/content/icons/error.png`)
+						.setThumbnail(`${process.env.VITE_MEDIA_URL}/content/icons/error.png`)
 						.setTimestamp()
 				]
 			});
@@ -64,7 +64,7 @@ export default {
 						.setTitle('❌ Error: Pack')
 						.setDescription(error.message)
 						.setColor(0x990000)
-						.setThumbnail(`${process.env.VITE_MEDIA_PATH}/content/icons/error.png`)
+						.setThumbnail(`${process.env.VITE_MEDIA_URL}/content/icons/error.png`)
 						.setTimestamp()
 				]
 			});
@@ -83,7 +83,7 @@ export default {
 				.setTitle(`📦 Pack Opened`)
 				.setDescription(`You simulated opening a ${packName} pack and got:\n\n${blook.name}`)
 				.setColor(0x00FF00)
-                .setThumbnail(`${process.env.VITE_MEDIA_PATH}/content/icons/success.png`)
+                .setThumbnail(`${process.env.VITE_MEDIA_URL}/content/icons/success.png`)
 				.setTimestamp();
 
 			await interaction.editReply({ embeds: [embed] });
@@ -103,7 +103,7 @@ export default {
 			.setTitle(`📦 ${amount} Pack${amount > 0 ? 's' : ''} Opened`)
 			.setDescription(`You simulated opening a ${packName} pack and got:\n\n${blookCountString}`)
 			.setColor(0x00FF00)
-            .setThumbnail(`${process.env.VITE_MEDIA_PATH}/content/icons/success.png`)
+            .setThumbnail(`${process.env.VITE_MEDIA_URL}/content/icons/success.png`)
 			.setTimestamp();
 
 		await interaction.editReply({ embeds: [embed] });
